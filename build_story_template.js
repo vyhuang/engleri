@@ -1,0 +1,30 @@
+const jsdom = require("jsdom");
+const fs = require('fs');
+
+const { JSDOM } = jsdom;
+
+var script;
+try {
+    script = fs.readFileSync("./build/engleri.js", "utf8").trim();
+} catch (err) {
+    console.log(err);
+    return;
+}
+
+var page = new JSDOM(`
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <title>{{STORY_NAME}}</title>
+    </head>
+    <body>
+        {{STORY_DATA}}
+        <script>
+            (function(window){${script}})(window);
+        </script>
+    </body>
+</html>`);
+
+fs.writeFileSync("./build/story.html", page.serialize());

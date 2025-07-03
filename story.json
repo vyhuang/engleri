@@ -1,0 +1,8 @@
+{
+    "name": "Engleri",
+    "version": "0.1.0",
+    "description": "A Twine story format that uses Inkle's Ink language",
+    "proofing": false,
+    "license": "MIT",
+    "setup": ""
+}

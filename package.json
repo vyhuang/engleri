@@ -1,0 +1,26 @@
+{
+  "name": "engleri",
+  "version": "0.1.0",
+  "description": "A Twine story format that uses Inkle's Ink language",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vyhuang/engleri.git"
+  },
+  "keywords": [
+    "twine",
+    "storyformat"
+  ],
+  "author": "Vincent Huang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vyhuang/engleri/issues"
+  },
+  "homepage": "https://github.com/vyhuang/engleri#readme",
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
