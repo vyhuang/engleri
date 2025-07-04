@@ -6,4 +6,5 @@
     "preserveConstEnums": true,
     "lib": ["es2021", "dom"],
   },
+  "exclude": ["**/*.pegjs"],
 }

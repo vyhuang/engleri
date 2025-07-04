@@ -165,3 +165,5 @@ dist-ssr
 
 build/*
 test.html
+src/grammar/*.ts
+src/grammar/*.js

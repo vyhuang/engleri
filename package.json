@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup -c && npm run build:css && npm run build:template && npm run build:format",
-    "build:css": "cp src/story.css build/main.css",
+    "build:grammar": "peggy -c peggy.config.cjs",
+    "build:css": "cp src/story/story.css build/main.css",
     "build:template": "node scripts/build_story_template.js",
     "build:format": "node scripts/build_format.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -30,6 +31,7 @@
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
     "jsdom": "^26.1.0",
+    "peggy": "^5.0.4",
     "rollup": "^4.44.1"
   },
   "files": [
