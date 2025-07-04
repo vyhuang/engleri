@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const { JSDOM } = jsdom;
 
-var script;
+let script;
 try {
     script = fs.readFileSync("./build/main.js", "utf8").trim();
 } catch (err) {
@@ -11,13 +11,25 @@ try {
     return;
 }
 
-var page = new JSDOM(`
+let styling;
+try {
+    styling = fs.readFileSync("./build/main.css", "utf8").trim();
+} catch (err) {
+    console.log(err);
+    return;
+}
+
+
+let page = new JSDOM(`
 <!DOCTYPE html>
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
         <title>{{STORY_NAME}}</title>
+        <style>
+${styling}
+        </style>
     </head>
     <body>
         {{STORY_DATA}}

@@ -1,6 +1,6 @@
 /**
- * An object representing a passage. The current passage will be `window.passage`.
- * @class Passage
+ * An object representing a passage.  
+ * * @class Passage
  */
 
 class Passage {

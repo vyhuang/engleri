@@ -6,8 +6,7 @@ const Passage = require('./Passage.js');
 const Utils = require('./Utils.js');
 
 /**
- * An object representing the entire story. After the document has completed
- * loading, an instance of this class will be available at `window.Story`.
+ * An object representing the entire story.  
  * @class Story
  */
 class Story {
@@ -69,45 +68,11 @@ class Story {
 
   /**
    * Begins playing this story based on data from tw-storydata.
-   * 1. Apply all user styles
-   * 2. Run all user scripts
-   * 3. Find starting passage
-   // Excised //* 4. Add to starting passage to History.history
-   * 5. Show starting passage
-   // Excised // * 6. Trigger 'start' event
+   * 1. Find starting passage
+   * 2. Show starting passage
    * @function start
    */
   start () {
-
-    // For each Twine style, add them to the body as extra style elements.
-    /*
-    document.querySelectorAll('*[type="text/twine-css"]').forEach((element) => {
-      const twineStyleElement = element;
-      // Append a new `<style>` with text from old.
-      document.body.append(
-        Utils.generateElements(`<style>${twineStyleElement.textContent}</style>`));
-    });
-    */
-
-    /**
-     * Note: Browsers prevent error catching from scripts
-     *  added after the initial loading.
-     *
-     * window.onerror will have error, but it cannot
-     *  be caught.
-     */
-    /*
-    document.querySelectorAll('*[type="text/twine-javascript"]').forEach((element) => {
-      // Convert Element into jQuery Element.
-      const twineScriptElement = element;
-      // Create a new `<script>`.
-      const newScriptElement = Utils.generateElements("<script>");
-      // Set the text of new from old.
-      newScriptElement.textContent = twineScriptElement.textContent;
-      // Append the new `<script>` with text to document body.
-      document.body.append(newScriptElement);
-    });
-    */
 
     // Get the startnode value (which is a number).
     const startingPassageID = parseInt(document.querySelector('tw-storydata').getAttribute('startnode'));
