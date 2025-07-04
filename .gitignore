@@ -163,5 +163,5 @@ dist-ssr
 *.sln
 *.sw?
 
-./build/*
+build/*
 test.html
