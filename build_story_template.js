@@ -5,7 +5,7 @@ const { JSDOM } = jsdom;
 
 var script;
 try {
-    script = fs.readFileSync("./build/engleri.js", "utf8").trim();
+    script = fs.readFileSync("./build/main.js", "utf8").trim();
 } catch (err) {
     console.log(err);
     return;
@@ -22,9 +22,9 @@ var page = new JSDOM(`
     <body>
         {{STORY_DATA}}
         <script>
-            (function(window){${script}})(window);
-        </script>
+${script}
+       </script>
     </body>
 </html>`);
 
-fs.writeFileSync("./build/story.html", page.serialize());
+fs.writeFileSync("./build/story_template.html", page.serialize());

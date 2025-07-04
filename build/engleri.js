@@ -1,5 +1,1 @@
-function hello() {
-    console.log("Hello World");
-}
-
-hello();
+window.storyFormat({"name":"Engleri","version":"0.1.0","description":"A Twine story format that uses Inkle's Ink language","proofing":false,"license":"MIT","setup":"","source":"<!DOCTYPE html><html><head>\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n        <meta charset=\"utf-8\">\n        <title>{{STORY_NAME}}</title>\n    </head>\n    <body>\n        {{STORY_DATA}}\n        <script>\n(function (factory) {\n\ttypeof define === 'function' && define.amd ? define(factory) :\n\tfactory();\n})((function () { 'use strict';\n\n\tconsole.log(\"hello world\");\n\n}));\n       </script>\n    \n</body></html>"});

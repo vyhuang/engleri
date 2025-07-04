@@ -4,6 +4,7 @@
   "description": "A Twine story format that uses Inkle's Ink language",
   "main": "index.js",
   "scripts": {
+    "build": "rollup -c && node build_story_template.js && node build_format.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +22,12 @@
   },
   "homepage": "https://github.com/vyhuang/engleri#readme",
   "devDependencies": {
-    "jsdom": "^26.1.0"
-  }
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "jsdom": "^26.1.0",
+    "rollup": "^4.44.1"
+  },
+  "files": [
+    "build"
+  ]
 }

@@ -6,11 +6,14 @@
     <body>
         {{STORY_DATA}}
         <script>
-            (function(window){function hello() {
-    console.log("Hello World");
-}
+(function (factory) {
+	typeof define === 'function' && define.amd ? define(factory) :
+	factory();
+})((function () { 'use strict';
 
-hello();})(window);
-        </script>
+	console.log("hello world");
+
+}));
+       </script>
     
 </body></html>
