@@ -16,6 +16,8 @@ class Passage {
     this.name = name;
     this.tags = tags;
     this.source = source;
+
+    console.log(`Passage '${this.name} source:${this.source}`);
   }
 
   /**
