@@ -16,3 +16,4 @@ story.source = indexFile;
 let format = "window.storyFormat(" + JSON.stringify(story) + ");";
 // Write the "format.js" file using
 fs.writeFileSync("build/engleri.js", format);
+fs.copyFileSync("build/engleri.js", "storyformats/engleri/format.js");

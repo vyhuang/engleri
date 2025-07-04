@@ -1,0 +1,14 @@
+:: StoryTitle
+Hello World
+
+:: StoryData
+{
+        "ifid": "BAE16305-A9A3-4D96-971C-838DB0DDAA62"
+}
+
+:: Start [crossed_fingers]
+Hello World!!!
+[[next|Second Passage]]
+
+:: Second Passage
+Hello Some More!!!

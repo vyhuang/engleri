@@ -21,6 +21,9 @@ var page = new JSDOM(`
     </head>
     <body>
         {{STORY_DATA}}
+		<tw-story>
+			<tw-passage class="passage"></tw-passage>
+		</tw-story>
         <script>
 ${script}
        </script>
