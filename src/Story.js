@@ -246,10 +246,7 @@ class Story {
     }
 
     // Get passage source.
-    let passageSource = passage.source;
-
-    // parse the passage source
-    passageSource = Passage.parse(passageSource);
+    let passageSource = passage.renderLinks();
 
     // Return the passage source.
     return passageSource;
