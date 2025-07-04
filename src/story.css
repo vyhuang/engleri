@@ -3,7 +3,6 @@
 body {
 	font: 1.5em "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: hsl(0, 0%, 13%);
-	margin-right: 1em;
     text-align: center;
 }
 
@@ -39,16 +38,6 @@ tw-link:hover, tw-icon:hover, a:hover {
 	color: #44f;
 	text-decoration-color: #44f;
 	text-decoration: underline;
-}
-
-a:hover {
-	color: #cc8929;
-	text-decoration-color: #cc8929;
-}
-
-a:active {
-	color: #ffb040;
-	text-decoration-color: #cc8929;
 }
 
 tw-storydata {

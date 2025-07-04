@@ -25,10 +25,16 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
     "jsdom": "^26.1.0",
     "rollup": "^4.44.1"
   },
   "files": [
     "build"
-  ]
+  ],
+  "type": "module",
+  "dependencies": {
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3"
+  }
 }

@@ -7,8 +7,7 @@ Hello World
 }
 
 :: Start [crossed_fingers]
-Hello World!!!
-[[next->Second Passage]]
+Hello [[World!!!->Second Passage]]
 
 :: Second Passage
 Hello Some More!!!

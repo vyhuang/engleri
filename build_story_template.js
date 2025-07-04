@@ -1,26 +1,22 @@
-const jsdom = require("jsdom");
-const fs = require('fs');
-
-const { JSDOM } = jsdom;
+import jsdom from "jsdom";
+import { readFileSync, writeFileSync } from 'fs';
 
 let script;
 try {
-    script = fs.readFileSync("./build/main.js", "utf8").trim();
+    script = readFileSync("./build/main.js", "utf8").trim();
 } catch (err) {
-    console.log(err);
-    return;
+    throw new Error(err);
 }
 
 let styling;
 try {
-    styling = fs.readFileSync("./build/main.css", "utf8").trim();
+    styling = readFileSync("./build/main.css", "utf8").trim();
 } catch (err) {
-    console.log(err);
-    return;
+    throw new Error(err);
 }
 
 
-let page = new JSDOM(`
+let page = new jsdom.JSDOM(`
 <!DOCTYPE html>
 <html>
     <head>
@@ -42,4 +38,4 @@ ${script}
     </body>
 </html>`);
 
-fs.writeFileSync("./build/story_template.html", page.serialize());
+writeFileSync("./build/story_template.html", page.serialize());

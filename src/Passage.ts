@@ -4,26 +4,17 @@
  */
 
 class Passage {
-  constructor (name = 'Default', tags = [], source = '') {
-    /**
-     * @property {string} name - The name of passage
-     * @type {string}
-     */
 
+  name: string;
+  tags: string[];
+  source: string;
+
+  constructor (name: string | null, tags: string[] | null, source: string | null) {
+    name ??= 'Default';
+    tags ??= [];
+    source ??= '';
     this.name = name;
-
-    /**
-     * @property {Array} tags - The tags of the passage.
-     * @type {Array}
-     */
-
     this.tags = tags;
-
-    /**
-     * @property {string} source - The passage source code.
-     * @type {string}
-     */
-
     this.source = source;
   }
 
@@ -32,7 +23,7 @@ class Passage {
    * and returns the result.
    */
   renderLinks() {
-    const rules = [
+    const rules : [RegExp, string][] = [
       // [[link_name|target_passage]]
       // [[link_name->target_passage]]
       [/\[\[(.+)(\||-\&gt;)(.+)\]\]/g, '<tw-link data-passage="$3">$1</tw-link>'],
@@ -50,4 +41,4 @@ class Passage {
   }
 }
 
-module.exports = Passage;
+export { Passage };

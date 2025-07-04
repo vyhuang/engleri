@@ -2,40 +2,47 @@
  * @external Element
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element|Element}
  */
-const Passage = require('./Passage.js');
-const Utils = require('./Utils.js');
+import { Passage } from './Passage';
+import { Utils } from './Utils';
 
 /**
  * An object representing the entire story.  
  * @class Story
  */
 class Story {
-  constructor () {
-    /**
-     * @property {string} name - The name of the story.
-     * @type {string}
-     * @readonly
-     */
-    this.name = document.querySelector('tw-storydata').getAttribute('name');
+  name: string | null;
+  passages: Passage[];
 
-    /**
-     * An array of all passages.
-     * @property {Array} passages - Passages array.
-     * @type {Array}
-     */
+  storyData: Element;
+  workingPassage: Element;
+
+  currentPassage: Passage | null;
+
+  constructor () {
+
+    let storydataElement = document.querySelector('tw-storydata');
+
+    if (storydataElement === null) {
+      throw new Error("Could not find '<tw-storydata>' element!");
+    }
+
+    this.storyData = storydataElement;
+
+    this.name = this.storyData.getAttribute('name');
+
     this.passages = [];
 
     // For each child element of the `<tw-storydata>` element,
     //  create a new Passage object based on its attributes.
-    document.querySelector('tw-storydata').querySelectorAll('tw-passagedata').forEach((element) => {
-      const elementReference = element;
+    this.storyData.querySelectorAll('tw-passagedata').forEach((element) => {
       // Access any potential tags.
-      let tags = elementReference.getAttribute('tags');
+      let tagsValue = element.getAttribute('tags');
 
       // Does the 'tags' attribute exist?
-      if (tags !== '' && tags !== undefined) {
+      let tags: string[];
+      if (tagsValue !== '' && tagsValue) {
         // Attempt to split by space.
-        tags = tags.split(' ');
+        tags = tagsValue.split(' ');
       } else {
         // It did not exist, so we create it as an empty array.
         tags = [];
@@ -43,24 +50,18 @@ class Story {
 
       // Push the new passage.
       this.passages.push(new Passage(
-        elementReference.getAttribute('name'),
+        element.getAttribute('name'),
         tags,
-        elementReference.innerHTML,
+        element.innerHTML,
       ));
     });
 
-    /**
-     * Passage element.
-     * @property {Element} passageElement Passage element.
-     * @type {Element}
-     */
-    this.passageElement = document.querySelector('tw-passage');
+    let workingPassage;
+    if (!(workingPassage = document.querySelector('tw-passage'))) {
+      throw new Error("Unable to locate <tw-passage>!")
+    }
+    this.workingPassage = workingPassage;
 
-    /**
-     * The current passage.
-     * @property {Passage|null} currentPassage Currently showing passage, if any.
-     * @type {Passage|null}
-     */
     this.currentPassage = null;
 
   }
@@ -70,14 +71,25 @@ class Story {
    * Begins playing this story based on data from tw-storydata.
    * 1. Find starting passage
    * 2. Show starting passage
-   * @function start
    */
   start () {
 
     // Get the startnode value (which is a number).
-    const startingPassageID = parseInt(document.querySelector('tw-storydata').getAttribute('startnode'));
+    let passageIDStr = this.storyData.getAttribute('startnode');
+
+    if (!passageIDStr) {
+      throw new Error('Unable to fetch startnode value!');
+    }
+
+    const startingPassageID = parseInt(passageIDStr);
     // Use the PID to find the name of the starting passage based on elements.
-    const startPassageName = document.querySelector(`[pid="${startingPassageID}"]`).getAttribute('name');
+    let startingPassage: Element | null;
+    let startPassageName: string | null;
+    if (!(startingPassage = document.querySelector(`[pid="${startingPassageID}"]`)) 
+        || !(startPassageName = startingPassage.getAttribute('name'))) {
+      throw new Error('Unable to fetch starting passage name!');
+    } 
+
     // Search for the starting passage.
     const passage = this.getPassageByName(startPassageName);
 
@@ -92,22 +104,24 @@ class Story {
     this.currentPassage = passage;
 
     // Overwrite current tags
-    this.passageElement.setAttribute('tags', passage.tags);
+    this.workingPassage.setAttribute('tags', passage.tags.join(" "));
 
     // Get passage source.
     const passageSource = this.include(passage.name);
 
     // Overwrite the parsed with the rendered.
-    this.passageElement.innerHTML = passageSource;
+    this.workingPassage.innerHTML = passageSource;
 
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(
         'click', 
         (event) => { 
-          // Retrieve data-passage value.  
-          const passageName = event.target.getAttribute('data-passage');
-          // Show the passage by name.
-          this.show(passageName); 
+          if (event.target instanceof Element) {
+            // Retrieve data-passage value.  
+            const passageName = event.target.getAttribute('data-passage');
+            // Show the passage by name.
+            this.show(passageName); 
+          }
         },
         'tw-link[data-passage]'
       );
@@ -119,7 +133,7 @@ class Story {
    * @param {string} tag - Tag to search for.
    * @returns {Array} Array containing none, one, or many passage objects.
    */
-  getPassagesByTag (tag) {
+  getPassagesByTag (tag: string): Array<any> {
     // Search internal passages
     return this.passages.filter((p) => {
       return p.tags.includes(tag);
@@ -134,9 +148,9 @@ class Story {
    * @param {string} name - name of the passage
    * @returns {Passage|null} Passage object or null
    */
-  getPassageByName (name) {
+  getPassageByName (name: string): Passage | null {
     // Create default value
-    let passage = null;
+    let passage : Passage | null = null;
 
     // Search for any passages with the name
     const result = this.passages.filter((p) => p.name === name);
@@ -154,10 +168,8 @@ class Story {
   /**
    * Replaces current passage shown to reader with rendered source of named passage.
    * If the named passage does not exist, an error is thrown.
-   * @function show
-   * @param {string} name name of the passage.
    */
-  show (name) {
+  show (name: string) {
     // Look for passage by name.
     const passage = this.getPassageByName(name);
 
@@ -172,22 +184,24 @@ class Story {
     this.currentPassage = passage;
 
     // Overwrite current tags.
-    this.passageElement.getAttribute('tags', passage.tags);
+    this.workingPassage.setAttribute('tags', passage.tags.join(" "));
 
     // Get passage source by name.
     const passageSource = this.include(passage.name);
 
     // Overwrite any existing HTML.
-    this.passageElement.innerHTML = passageSource;
+    this.workingPassage.innerHTML = passageSource;
 
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(      
       'click', 
       (event) => {
-        // Retrieve data-passage value.
-        const passageName = event.target.getAttribute('data-passage');
-        // Show the passage by name.
-        this.show(passageName); 
+        if (event.target instanceof Element) {
+          // Retrieve data-passage value.
+          const passageName = event.target.getAttribute('data-passage');
+          // Show the passage by name.
+          this.show(passageName); 
+        }
       },
       'tw-link[data-passage]', 
     );
@@ -195,11 +209,8 @@ class Story {
 
   /**
    * Returns the rendered source of a passage by name.
-   * @function include
-   * @param {string} name - name of the passage.
-   * @returns {string} Rendered passage source.
    */
-  include (name) {
+  include (name: string): string {
     // Search for passage by name.
     const passage = this.getPassageByName(name);
 
@@ -219,26 +230,22 @@ class Story {
 
   /**
    * Render a passage to any/all element(s) matching query selector
-   * @function renderPassageToSelector
-   * @param {object} passageName - The passage to render
-   * @param {string} selector - jQuery selector
    */
-  renderPassageToSelector (passageName, selector) {
+  renderPassageToSelector (passageName: string, selector: string) {
     // Get passage source
     const passageSource = this.include(passageName);
 
     // Replace the HTML of the selector (if valid).
-    document.query(selector).innerHTML = passageSource;
+    let element = document.querySelector(selector);
+    if (element) {
+      element.innerHTML = passageSource;
+    }
   }
 
   /**
    * Add a new passage to the story.
-   * @function addPassage
-   * @param {string} name name
-   * @param {Array} tags tags
-   * @param {string} source source
    */
-  addPassage (name = '', tags = [], source = '') {
+  addPassage (name: string = '', tags: string[] = [], source: string = '') {
     // Look for name.
     const nameSearch = this.getPassageByName(name);
 
@@ -273,23 +280,18 @@ class Story {
    * throw an error.
    *
    * Note: Does not affect HTML elements.
-   * @function removePassage
-   * @param {string} name name
    */
-  removePassage (name = '') {
+  removePassage (name: string = '') {
     this.passages = this.passages.filter(passage => {
       return passage.name !== name;
     });
   }
 
   /**
-   * Go to an existing passage in the story. Unlike `Story.show()`, this will add to the history.
-   *
+   * Go to an existing passage in the story.
    * Throws error if passage does not exist.
-   * @function goto
-   * @param {string} name name of passage
    */
-  goto (name = '') {
+  goto (name: string = '') {
     // Look for passage.
     const passage = this.getPassageByName(name);
 
@@ -304,4 +306,4 @@ class Story {
   }
 }
 
-module.exports = Story;
+export { Story };
