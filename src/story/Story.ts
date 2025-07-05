@@ -111,7 +111,7 @@ class Story {
 
     // Overwrite the parsed with the rendered.
     this.workingPassage.innerHTML = "";
-    this.workingPassage.appendChild(passageTemplate.content);
+    this.workingPassage.appendChild(passageTemplate.content.cloneNode(true));
 
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(
@@ -192,7 +192,7 @@ class Story {
 
     // Overwrite any existing HTML.
     this.workingPassage.innerHTML = "";
-    this.workingPassage.appendChild(passageTemplate.content);
+    this.workingPassage.appendChild(passageTemplate.content.cloneNode(true));
 
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(      
@@ -240,8 +240,8 @@ class Story {
     // Replace the HTML of the selector (if valid).
     let element = document.querySelector(selector);
     if (element) {
-      element.innerHTML = ""; 
-      element.appendChild(passageTemplate.content);
+      element.innerHTML = "";
+      element.appendChild(passageTemplate.content.cloneNode(true));
     }
   }
 

@@ -1,25 +1,30 @@
 const testcases = require('./testcases');
-const parser = require('../passage_test');
+const parser = require('../../src/grammar/passage_test');
 
-test('pureText', () => {
-  runSuite(testcases, "pureText");
+describe('rules', () => {
+  beforeEach(() => { });
+
+  afterEach(() => { });
+
+  test('pureText', () => {
+    runSuite(testcases, "pureText");
+  })
+
+  test('blankLines', () => {
+    runSuite(testcases, "blankLines");
+  })
+
+  test('links', () => {
+    runSuite(testcases, "links");
+  })
+
+  test('mixedLine', () => {
+    runSuite(testcases, "mixedLine");
+  })
+
 })
 
-test('blankLines', () => {
-  runSuite(testcases, "blankLines", (values) => values.length);
-})
-
-test('links', () => {
-  runSuite(testcases, "links");
-})
-
-test('mixedLine', () => {
-  runSuite(testcases, "mixedLine");
-})
-
-
-function runSuite(testcases, testSuiteName, valuesTransform) {
-  valuesTransform ??= (values) => values;
+function runSuite(testcases, testSuiteName) {
 
   let testSuite = testcases.get(testSuiteName);
   let currentCase = null;
@@ -35,7 +40,8 @@ function runSuite(testcases, testSuiteName, valuesTransform) {
         let actualResult = parser.parse(currentCase, { startRule: testSuite.rule })
         expect(actualResult.typeName).toStrictEqual(element.expected.name);
         if (element.expected.values) {
-          expect(valuesTransform(actualResult.values)).toStrictEqual(element.expected.values);
+          expect(testSuite.actualTransform(actualResult.values))
+            .toStrictEqual(testSuite.expectedTransform(element.expected.values));
         }
 
         // render() result is as expected
@@ -47,11 +53,3 @@ function runSuite(testcases, testSuiteName, valuesTransform) {
     throw new Error(`Testcase '${currentCase}' failed: ${err}`);
   }
 }
-
-/*
-beforeEach(() => {
-});
-
-afterEach(() => {
-});
-*/

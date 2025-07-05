@@ -17,6 +17,8 @@ const testCases = new Map();
 testCases.set("blankLines", 
     {
         rule: "_nls",
+        actualTransform: (values) => values.length,
+        expectedTransform: (values) => values,
         cases: [
             Case("  ", "fail"),
             Case("  \t\n", { name: "newlines", values: 1, render: ""}),
@@ -28,6 +30,8 @@ testCases.set("blankLines",
 testCases.set("pureText", 
     {
         rule: "pureText",
+        actualTransform: (values) => values,
+        expectedTransform: (values) => values,
         cases: [
             Case("Hello world", 
                 { name: "text", values: "Hello world".split(""), render: "Hello world"}),
@@ -59,7 +63,11 @@ testCases.set("pureText",
 testCases.set("links", 
     {
         rule: "link",
+        actualTransform: (values) => values,
+        expectedTransform: (values) => values,
         cases: [
+            Case("<[[abc ]]>", 
+                { name: "link", values: null, render: "<tw-link data-passage=\"abc\">abc</tw-link>" }),
             Case("<[[abc def | ghi ]]>", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
             Case("&lt;[[abc def | ghi ]]&gt;", 
@@ -68,6 +76,8 @@ testCases.set("links",
             Case("<[[abc def <- ghi ]]>", "fail"),
             Case("&lt;[[abc def -&gt; ghi ]]&gt;", "fail"),
             Case("&lt;[[abc def &lt;- ghi ]]&gt;", "fail"),
+            Case("[[abc ]]", 
+                { name: "link", values: null, render: "<tw-link data-passage=\"abc\">abc</tw-link>" }),
             Case("[[abc def | ghi ]]", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
             Case("[[abc def -> ghi ]]", 
@@ -88,6 +98,8 @@ testCases.set("links",
 testCases.set("mixedLine",
     {
         rule: "mixedLine",
+        actualTransform: (values) => values,
+        expectedTransform: (values) => values,
         cases: [
             Case("Hello world", { name: "mixedLine", values: null, render: "<p>Hello world</p>"}),
             Case("Hello [[world|second passage]]", 

@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build:grammar && rollup -c && npm run build:css && npm run build:template && npm run build:format",
-    "build:grammar": "peggy -c peggy.config.cjs",
+    "build:grammar": "peggy -c peggy.config.cjs && npm run build:grammar-test",
     "build:grammar-test": "peggy -o src/grammar/passage_test.js --allowed-start-rules '*' src/grammar/passage.pegjs",
     "build:css": "cp src/story/story.css build/main.css",
     "build:template": "node scripts/build_story_template.js",
     "build:format": "node scripts/build_format.js",
-    "test:grammar": "npm run build:grammar-test && jest",
-    "test:compile": "npm run build && tweego test/resource/hello.twee -o test.html -f engleri"
+    "test": "npm run build && jest",
+    "test:compile": "npm run build && tweego test/resource/hello.twee -o test.html -f engleri",
+    "test:grammar": "npm run build:grammar-test && jest test/grammar/grammar.test.js"
   },
   "repository": {
     "type": "git",
@@ -28,10 +29,15 @@
   },
   "homepage": "https://github.com/vyhuang/engleri#readme",
   "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-typescript": "^7.27.1",
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
+    "@types/jest": "^30.0.0",
     "jest": "^30.0.4",
+    "jest-environment-jsdom": "^30.0.4",
     "jsdom": "^26.1.0",
     "peggy": "^5.0.4",
     "rollup": "^4.44.1",

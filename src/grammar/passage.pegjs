@@ -67,11 +67,17 @@ mixedLine = contents:( pureText / link )+ nls:_nls
 
 link = _wrappedLink / _twLink
 
-_wrappedLink = _angleBracketLeft"[["label:pureText "|" destination:pureText "]]"_angleBracketRight 
-	{ return new Link([label, destination]); }
-_twLink = "[[" value:(_inner_link_lr / _inner_link_rl) "]]" 
+_wrappedLink = _angleBracketLeft"[[" label:pureText destination:("|" dest:pureText { return dest; })? "]]"_angleBracketRight 
+	{
+		let dest = destination ? destination : label;
+
+		return new Link([label, dest]);
+	}
+_twLink = "[[" value:(_inner_link_lr / _inner_link_rl / _inner_link_simple) "]]" 
 	{ return new Link(value); }
 
+_inner_link_simple = labelAndDest:pureText
+	{ return [labelAndDest, labelAndDest]; }
 _inner_link_lr = label:pureText (_linkArrowRight / "|") destination:pureText
 	{ return [label, destination]; }
 _inner_link_rl = destination:pureText _linkArrowLeft label:pureText
