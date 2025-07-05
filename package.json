@@ -10,7 +10,7 @@
     "build:css": "cp src/story/story.css build/main.css",
     "build:template": "node scripts/build_story_template.js",
     "build:format": "node scripts/build_format.js",
-    "test": "npm run build && jest",
+    "test": "npm run build && npm run build:grammar-test && jest",
     "test:compile": "npm run build && tweego test/resource/hello.twee -o test.html -f engleri",
     "test:grammar": "npm run build:grammar-test && jest test/grammar/grammar.test.js"
   },

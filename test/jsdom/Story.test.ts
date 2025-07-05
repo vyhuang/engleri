@@ -69,7 +69,7 @@ describe('Story', () => {
   describe('include()', () => {
     it('Should return template of named passage', () => {
       expect(window._story.include('Test Passage 5').innerHTML)
-        .toEqual('<p><tw-link role="link" onclick="" data-passage="Test Passage">Test Passage</tw-link></p>\n');
+        .toEqual('<p><tw-link data-passage="Test Passage">Test Passage</tw-link></p>\n');
     });
 
     it('Should throw error if named passage does not exist', () => {

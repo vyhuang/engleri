@@ -57,7 +57,7 @@ mixedLine = contents:( pureText / link )+ nls:_nls
 			let pText =  `<p>${contents.map((o)=>o.render()).join("")}</p>`;
 			let brText = `${newlines.map((o)=>o.render()).join("")}`;
 
-			return `${pText}${brText}`
+			return `${pText}\n${brText}`
 		};
 
 		return new ParsedObject("mixedLine", [contents, [nls]], toHtml)

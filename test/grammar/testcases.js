@@ -101,36 +101,36 @@ testCases.set("mixedLine",
         actualTransform: (values) => values,
         expectedTransform: (values) => values,
         cases: [
-            Case("Hello world", { name: "mixedLine", values: null, render: "<p>Hello world</p>"}),
+            Case("Hello world", { name: "mixedLine", values: null, render: "<p>Hello world</p>\n"}),
             Case("Hello [[world|second passage]]", 
                 { 
                     name: "mixedLine", 
                     values: null, 
-                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>"
+                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>\n"
                 }),
             Case("Hello [[world->second passage]]!!!", 
                 { 
                     name: "mixedLine", 
                     values: null, 
-                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link>!!!</p>"
+                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link>!!!</p>\n"
                 }),
             Case("Hello [[world->second passage]]!!! ([[???->third-passage]])", 
                 { 
                     name: "mixedLine", 
                     values: null, 
-                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link>!!! (<tw-link data-passage=\"third-passage\">???</tw-link>)</p>"
+                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link>!!! (<tw-link data-passage=\"third-passage\">???</tw-link>)</p>\n"
                 }),
             Case("Hello [[world->second passage]]\n\n", 
                 { 
                     name: "mixedLine", 
                     values: null, 
-                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>"
+                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>\n"
                 }),
             Case("Hello [[world->second passage]]\n\n\n", 
                 { 
                     name: "mixedLine", 
                     values: null, 
-                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p><br> "
+                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>\n<br> "
                 }),
         ]
     });
