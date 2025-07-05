@@ -67,10 +67,10 @@ textLinkLine = contents:( pureText / link )+ nls:_nls
 
 link = _wrappedLink / _twLink
 
-_twLink = "[[" value:(_inner_link_lr / _inner_link_rl) "]]" 
-	{ return new Link(value); }
 _wrappedLink = "<[["label:pureText "|" destination:pureText "]]>" 
 	{ return new Link([label, destination]); }
+_twLink = "[[" value:(_inner_link_lr / _inner_link_rl) "]]" 
+	{ return new Link(value); }
 
 _inner_link_lr = label:pureText (_linkArrowRight / "|") destination:pureText
 	{ return [label, destination]; }
@@ -87,9 +87,17 @@ pureText = chars:(_charUnescaped / _charEscaped)+
 	}
 
 _charUnescaped = (&(!_nonTextCharUnescaped !_linkArrowRight) char:. { return char; })
-_charEscaped = "\\"char:(_angleBracketLeft / _angleBracketRight / [^\n]) { return char; }
+// every character EXCEPT the newline characters can be escaped.
+_charEscaped = "\\"char:(_angleBracketLeft / _angleBracketRight / [^\r\n]) { return char; }
 
-_nonTextCharUnescaped = _angleBracketLeft / _angleBracketRight / [\|\[\]\r\n_\\]
+// '<', '>' (and their escaped equivalents) are used for format markup
+// '|', '[', ']' are used for twine links
+// '{', '}' are used for variable printing
+// '\r' and '\n' are used for newlines (so we absolutely don't want to touch them)
+// '_' is used for quick styling
+// '\' is used for escaping characters
+_nonTextCharUnescaped = _angleBracketLeft / _angleBracketRight / [\|\[\]{}\r\n_\\] 
+
 _angleBracketLeft "<" = ("&lt;" / "<")
 _angleBracketRight ">" = ("&gt;" / ">")
 
