@@ -14,7 +14,7 @@ export default [
 		plugins: [
 			resolve(), 
 			typescript(),
-            commonjs(),
+			commonjs(),
 		]
 	},
 ];

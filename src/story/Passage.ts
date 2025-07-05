@@ -21,13 +21,9 @@ class Passage {
 
   renderTemplate(): HTMLTemplateElement {
     const parsedSource = parse(this.source);
-
     const template = document.createElement("template");
 
-
-    parsedSource.forEach((element: any) => { 
-      template.innerHTML += element.toHtml();
-    })
+    template.innerHTML = parsedSource.render();
 
     return template;
   }

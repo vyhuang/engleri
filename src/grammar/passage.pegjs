@@ -1,68 +1,77 @@
 {{
 class ParsedObject {
-	constructor(typeName, value, toHtml) {
-    	if (typeName) {
-			this.typeName = typeName;
-        }
-		if (value != undefined && value != null) {
-			this.value = value; // ParsedObject
-		}
-		if (toHtml) {
-			this.toHtml = toHtml;
-		} else {
-			this.toHtml = () => {
-				if (value instanceof ParsedObject) {
-					return value.toHtml;
-				}
-				return value;
-			}
-		}
+	// typeName: 	string
+	// values: 		(ParsedObject | string)[]
+	// toHtml:		(ParsedObject | string) => string
+	constructor(typeName, values, toHtml) {
+		typeName ??= "";
+		values ??= [];
+		toHtml ??= function(parsedObjects) {
+
+			let values = parsedObjects.map(function(object) {
+					return (typeof object === "string") ? object : object.render();
+				});
+
+			return values.join("");
+		};
+
+		this.typeName = typeName;
+		this.values = values;
+		this.toHtml = toHtml;
+	}
+
+	render() {
+		return this.toHtml(this.values);
 	}
 }
 
 class Link extends ParsedObject {
-	constructor(value) {
-		let dest = value[1].value;
-		let label = value[0].value;
+	constructor(values) {
+    	super(
+			"Link", 
+			values, 
+			function (textValues) {
+				// we know these values are text objects.
+				let renderedTextValues = textValues.map((value) => value.render());
+				let label = renderedTextValues[0];
+				let dest = renderedTextValues[1];
 
-    	super(null, value, () => `<tw-link data-passage="${dest}">${label}</tw-link>`);
+				return `<tw-link data-passage="${dest}">${label}</tw-link>`;
+			});
     }
 }
+
 }}
 
 Expression = lines:textLinkLine+ _eol 
-{ 
-	return lines;
-}
+	{ 
+		return new ParsedObject("lines", lines);
+	}
 
-textLinkLine = contents:( pureText / link )+ nls:_nls { 
+textLinkLine = contents:( pureText / link )+ nls:_nls 
+	{ 
+		const toHtml = function (values) {
+			let contents = values[0];
+			let newlines = values[1];
 
-		let values = [contents, nls].flat(Infinity);
+			let pText =  `<p>${contents.map((o)=>o.render()).join("")}</p>`;
+			let brText = `${newlines.map((o)=>o.render()).join("")}`;
 
-		const toHtml = () => {
-			let lineContents = values.map((element) => {
-				if (element instanceof ParsedObject) {
-					return element.toHtml();
-				}
-
-				return element;
-			})
-
-			return `<p>${lineContents.join("")}</p>`
+			return `${pText}${brText}`
 		};
 
-		return new ParsedObject("line", values, toHtml)
+		return new ParsedObject("line", [contents, [nls]], toHtml)
 	}
 
 // link
 
 link = _wrappedLink / _twLink
 
-_wrappedLink = "<[["label:pureText "|" destination:pureText "]]>" 
-	{ return new Link([label, destination]); }
 _twLink = "[[" value:(_inner_link_lr / _inner_link_rl) "]]" 
 	{ return new Link(value); }
 
+_wrappedLink = "<[["label:pureText "|" destination:pureText "]]>" 
+	{ return new Link([label, destination]); }
 _inner_link_lr = label:pureText (_linkArrowRight / "|") destination:pureText
 	{ return [label, destination]; }
 _inner_link_rl = destination:pureText _linkArrowLeft label:pureText
@@ -72,9 +81,9 @@ _linkArrowRight "->" = "->" / "-&gt;"
 _linkArrowLeft "<-" = "<-" / "&lt;-"
 
 // text
-pureText = text:(_charUnescaped / _charEscaped)+ 
+pureText = chars:(_charUnescaped / _charEscaped)+ 
 	{ 
-		return new ParsedObject("text", text.join("").trimStart()); 
+		return new ParsedObject("text", chars, (values) => values.join("").trimStart()); 
 	}
 
 _charUnescaped = (&(!_nonTextCharUnescaped !(_linkArrowRight)) char:. { return char; })
@@ -91,8 +100,17 @@ _nl "newLine" = _ ([\r])?[\n]
 
 _nls "blankLine" = lines:_nl*
 	{ 
-		const toHtml = () => lines.map(() => "<br>").join("");
-		return new ParsedObject("newlines", lines.length, toHtml); 
+		const toHtml = (values) => {
+			let count = values.length - 2;
+
+			if (count > 0) {
+				return "<br> ".repeat(count);
+			} else {
+				return "";
+			}
+
+		}
+		return new ParsedObject("newlines", lines, toHtml); 
 	}
 
 _eof = !.

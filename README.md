@@ -1,9 +1,9 @@
 # engleri
 
 ## TODO:
-- Add specialized link annotation `<[[link_name|destination]]>` 
-- Add basic newline support (see markup compilers?) [v0.1.1]
-- Cleanup current parsing code so it isn't a huge mess [v0.1.2]
+- ~~Add specialized link annotation `<[[link_name|destination]]>`~~
+- ~~Add basic newline support (see markup compilers?) [v0.1.1]~~
+- ~~Cleanup current parsing code so it isn't a huge mess [v0.1.2]~~
 
 - Figure out basic state tracking [v0.2.0]
 - Figure out saving / loading [v0.3.0]

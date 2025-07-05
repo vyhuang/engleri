@@ -9,5 +9,13 @@ Hello World
 :: Start [crossed_fingers]
 Hello [[World!!!->Second Passage]]
 
+([[Third Passage<-Goodbye?]])
+
 :: Second Passage
 Hello Some More!!!
+
+:: Third Passage
+bye
+
+
+... :(
