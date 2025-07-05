@@ -118,7 +118,7 @@ _nls "blankLines" = lines:_nl*
 			let count = values.length - 2;
 
 			if (count > 0) {
-				return "<br> ".repeat(count);
+				return "<br> \n".repeat(count);
 			} else {
 				return "";
 			}

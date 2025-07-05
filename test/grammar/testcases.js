@@ -23,8 +23,8 @@ testCases.set("blankLines",
             Case("  ", "fail"),
             Case("  \t\n", { name: "newlines", values: 1, render: ""}),
             Case("  \t\n\n", { name: "newlines", values: 2, render: ""}),
-            Case("  \t\n\n\n", { name: "newlines", values: 3, render: "<br> "}),
-            Case("  \t\n\n\n\n", { name: "newlines", values: 4, render: "<br> <br> "})
+            Case("  \t\n\n\n", { name: "newlines", values: 3, render: "<br> \n"}),
+            Case("  \t\n\n\n\n", { name: "newlines", values: 4, render: "<br> \n<br> \n"})
         ]
     });
 testCases.set("pureText", 
@@ -130,7 +130,7 @@ testCases.set("mixedLine",
                 { 
                     name: "mixedLine", 
                     values: null, 
-                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>\n<br> "
+                    render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>\n<br> \n"
                 }),
         ]
     });
