@@ -28,7 +28,7 @@ class ParsedObject {
 class Link extends ParsedObject {
 	constructor(values) {
     	super(
-			"Link", 
+			"link", 
 			values, 
 			function (textValues) {
 				// we know these values are text objects.
@@ -36,19 +36,19 @@ class Link extends ParsedObject {
 				let label = renderedTextValues[0];
 				let dest = renderedTextValues[1];
 
-				return `<tw-link data-passage="${dest}">${label}</tw-link>`;
+				return `<tw-link data-passage="${dest.trim()}">${label.trim()}</tw-link>`;
 			});
     }
 }
 
 }}
 
-Expression = lines:textLinkLine+ _eol 
+Expression = lines:mixedLine+ _eol 
 	{ 
 		return new ParsedObject("lines", lines);
 	}
 
-textLinkLine = contents:( pureText / link )+ nls:_nls 
+mixedLine = contents:( pureText / link )+ nls:_nls 
 	{ 
 		const toHtml = function (values) {
 			let contents = values[0];
@@ -60,14 +60,14 @@ textLinkLine = contents:( pureText / link )+ nls:_nls
 			return `${pText}${brText}`
 		};
 
-		return new ParsedObject("line", [contents, [nls]], toHtml)
+		return new ParsedObject("mixedLine", [contents, [nls]], toHtml)
 	}
 
 // link
 
 link = _wrappedLink / _twLink
 
-_wrappedLink = "<[["label:pureText "|" destination:pureText "]]>" 
+_wrappedLink = _angleBracketLeft"[["label:pureText "|" destination:pureText "]]"_angleBracketRight 
 	{ return new Link([label, destination]); }
 _twLink = "[[" value:(_inner_link_lr / _inner_link_rl) "]]" 
 	{ return new Link(value); }
@@ -106,7 +106,7 @@ _eol "endOfLine" = _nl / _eof
 
 _nl "newLine" = _ ([\r])?[\n]
 
-_nls "blankLine" = lines:_nl*
+_nls "blankLines" = lines:_nl*
 	{ 
 		const toHtml = (values) => {
 			let count = values.length - 2;
