@@ -1,6 +1,7 @@
+import { parse } from '../grammar/passage';
+
 /**
  * An object representing a passage.  
- * * @class Passage
  */
 
 class Passage {
@@ -16,8 +17,19 @@ class Passage {
     this.name = name;
     this.tags = tags;
     this.source = source;
+  }
 
-    console.log(`Passage '${this.name} source:${this.source}`);
+  renderTemplate(): HTMLTemplateElement {
+    const parsedSource = parse(this.source);
+
+    const template = document.createElement("template");
+
+
+    parsedSource.forEach((element: any) => { 
+      template.innerHTML += element.toHtml();
+    })
+
+    return template;
   }
 
   /**

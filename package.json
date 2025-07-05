@@ -4,7 +4,7 @@
   "description": "A Twine story format that uses Inkle's Ink language",
   "main": "index.js",
   "scripts": {
-    "build": "rollup -c && npm run build:css && npm run build:template && npm run build:format",
+    "build": "npm run build:grammar && rollup -c && npm run build:css && npm run build:template && npm run build:format",
     "build:grammar": "peggy -c peggy.config.cjs",
     "build:css": "cp src/story/story.css build/main.css",
     "build:template": "node scripts/build_story_template.js",

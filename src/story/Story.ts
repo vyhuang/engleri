@@ -107,10 +107,11 @@ class Story {
     this.workingPassage.setAttribute('tags', passage.tags.join(" "));
 
     // Get passage source.
-    const passageSource = this.include(passage.name);
+    const passageTemplate = this.include(passage.name);
 
     // Overwrite the parsed with the rendered.
-    this.workingPassage.innerHTML = passageSource;
+    this.workingPassage.innerHTML = "";
+    this.workingPassage.appendChild(passageTemplate.content);
 
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(
@@ -187,10 +188,11 @@ class Story {
     this.workingPassage.setAttribute('tags', passage.tags.join(" "));
 
     // Get passage source by name.
-    const passageSource = this.include(passage.name);
+    const passageTemplate = this.include(passage.name);
 
     // Overwrite any existing HTML.
-    this.workingPassage.innerHTML = passageSource;
+    this.workingPassage.innerHTML = "";
+    this.workingPassage.appendChild(passageTemplate.content);
 
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(      
@@ -210,7 +212,7 @@ class Story {
   /**
    * Returns the rendered source of a passage by name.
    */
-  include (name: string): string {
+  include (name: string): HTMLTemplateElement {
     // Search for passage by name.
     const passage = this.getPassageByName(name);
 
@@ -222,7 +224,7 @@ class Story {
     }
 
     // Get passage source.
-    let passageSource = passage.renderLinks();
+    let passageSource = passage.renderTemplate();
 
     // Return the passage source.
     return passageSource;
@@ -233,12 +235,13 @@ class Story {
    */
   renderPassageToSelector (passageName: string, selector: string) {
     // Get passage source
-    const passageSource = this.include(passageName);
+    const passageTemplate = this.include(passageName);
 
     // Replace the HTML of the selector (if valid).
     let element = document.querySelector(selector);
     if (element) {
-      element.innerHTML = passageSource;
+      element.innerHTML = ""; 
+      element.appendChild(passageTemplate.content);
     }
   }
 
