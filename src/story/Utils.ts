@@ -1,3 +1,5 @@
+/* The MIT License (MIT) Copyright (c) 2025 Vincent H. */
+
 class Utils {
     static generateElements(html : string) {
         const template = document.createElement('template');

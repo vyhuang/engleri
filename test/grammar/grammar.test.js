@@ -1,3 +1,5 @@
+/* The MIT License (MIT) Copyright (c) 2025 Vincent H. */
+
 const testcases = require('./testcases');
 const parser = require('../../src/grammar/passage_test');
 

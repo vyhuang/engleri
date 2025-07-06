@@ -1,3 +1,5 @@
+/* The MIT License (MIT) Copyright (c) 2025 Vincent H.  */
+
 class TestCase {
     constructor(testcase, expectedValue, expectError=false) {
         this.case = testcase;

@@ -1,3 +1,5 @@
+/* The MIT License (MIT) Copyright (c) 2019 Chris Klimas, 2022 Dan Cox, 2025 Vincent H.*/
+
 import { Story } from '../../src/story/Story';
 
 describe('Story', () => {
