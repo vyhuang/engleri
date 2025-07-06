@@ -24,34 +24,57 @@ describe('rules', () => {
     runSuite(testcases, "mixedLine");
   })
 
+  /*
+  test('InkText', () => {
+    runSuite(testcases, "InkText");
+  })
+    */
 })
 
 function runSuite(testcases, testSuiteName) {
 
   let testSuite = testcases.get(testSuiteName);
   let currentCase = null;
-  try {
-    testSuite.cases.forEach((element) => {
-      currentCase = element.case;
+
+  testSuite.cases.forEach((element) => {
+    currentCase = element.case;
+
+    let htmlEscaped = false;
+    try {
       if (element.expectError) {
         expect(() => {
           parser.parse(currentCase, { startRule: testSuite.rule });
         }).toThrow();
       } else {
-        // values transform to expected result
-        let actualResult = parser.parse(currentCase, { startRule: testSuite.rule })
-        expect(actualResult.typeName).toStrictEqual(element.expected.name);
-        if (element.expected.values) {
-          expect(testSuite.actualTransform(actualResult.values))
-            .toStrictEqual(testSuite.expectedTransform(element.expected.values));
-        }
-
-        // render() result is as expected
-        let renderedResult = actualResult.render();
-        expect(renderedResult).toBe(element.expected.render);
+        checkValuesAndRender(currentCase, testSuite.rule, element.expected, testSuite);
       }
-    });
-  } catch (err) {
-    throw new Error(`Testcase '${currentCase}' failed: ${err}`);
+    } catch (err) {
+      throw new Error(`Testcase '${currentCase}' failed: ${err}`);
+    }
+  });
+}
+
+function html(testString) {
+    let output = testString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    console.log(output);
+
+    return output;
+}
+
+function checkValuesAndRender(currentCase, startRule, expected, testSuite) {
+
+  // values transform to expected result
+  let actualResult = parser.parse(currentCase, { startRule: startRule })
+
+  expect(actualResult.typeName).toStrictEqual(expected.name);
+  if (expected.values) {
+    expect(testSuite.actualTransform(actualResult.values))
+      .toStrictEqual(testSuite.expectedTransform(expected.values));
+  }
+
+  // render() result is as expected
+  if (expected.render) {
+    let renderedResult = actualResult.render();
+    expect(renderedResult).toBe(expected.render);
   }
 }

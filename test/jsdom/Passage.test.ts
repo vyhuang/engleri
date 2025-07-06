@@ -18,4 +18,10 @@ describe('constructor()', () => {
     const p = new Passage();
     expect(p.source).toBe('');
   });
+
+  it('Should properly populate its unescapedSource field when initialized', () => {
+    const p = new Passage(null, null, "&lt;&gt;&amp;&amp;");
+    expect(p.source).toBe("&lt;&gt;&amp;&amp;");
+    expect(p.unescapedSource).toBe("<>&&");
+  })
 });

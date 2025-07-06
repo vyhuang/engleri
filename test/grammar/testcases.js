@@ -16,6 +16,7 @@ function Case(testcase, expectedValue) {
 }
 
 const testCases = new Map();
+
 testCases.set("blankLines", 
     {
         rule: "_nls",
@@ -29,6 +30,7 @@ testCases.set("blankLines",
             Case("  \t\n\n\n\n", { name: "newlines", values: 4, render: "<br> \n<br> \n"})
         ]
     });
+
 testCases.set("pureText", 
     {
         rule: "pureText",
@@ -40,28 +42,15 @@ testCases.set("pureText",
             Case("\\H\\e\\l\\l\\o world", 
                 { name: "text", values: "Hello world".split(""), render: "Hello world" }),
             Case("\\H\\e\\l\\l\\o <world", "fail"),
-            Case("\\H\\e\\l\\l\\o &lt;world", "fail"),
             Case("\\H\\e\\l\\l\\o \\<world", 
                 { name: "text", values: "Hello <world".split(""), render: "Hello <world" }),
-            Case("\\H\\e\\l\\l\\o \\&lt;world", 
-                { 
-                    name: "text", 
-                    values: ["Hello ".split(""), "&lt;", "world".split("")].flat(Infinity), 
-                    render: "Hello &lt;world" 
-                }),
             Case("\\H\\e\\l\\l\\o >world", "fail"),
-            Case("\\H\\e\\l\\l\\o &gt;world", "fail"),
             Case("\\H\\e\\l\\l\\o \\>world", 
                 { name: "text", values: "Hello >world".split(""), render: "Hello >world" }),
-            Case("\\H\\e\\l\\l\\o \\&gt;world", 
-                { 
-                    name: "text", 
-                    values: ["Hello ".split(""), "&gt;", "world".split("")].flat(Infinity) ,
-                    render: "Hello &gt;world"
-                }),
             Case("\\H\\e\\l\\l\\o \\\n", "fail"), 
         ]
     });
+
 testCases.set("links", 
     {
         rule: "link",
@@ -72,23 +61,15 @@ testCases.set("links",
                 { name: "link", values: null, render: "<tw-link data-passage=\"abc\">abc</tw-link>" }),
             Case("<[[abc def | ghi ]]>", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
-            Case("&lt;[[abc def | ghi ]]&gt;", 
-                { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
             Case("<[[abc def -> ghi ]]>", "fail"),
             Case("<[[abc def <- ghi ]]>", "fail"),
-            Case("&lt;[[abc def -&gt; ghi ]]&gt;", "fail"),
-            Case("&lt;[[abc def &lt;- ghi ]]&gt;", "fail"),
             Case("[[abc ]]", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"abc\">abc</tw-link>" }),
             Case("[[abc def | ghi ]]", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
             Case("[[abc def -> ghi ]]", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
-            Case("[[abc def -&gt; ghi ]]", 
-                { name: "link", values: null, render: "<tw-link data-passage=\"ghi\">abc def</tw-link>" }),
             Case("[[abc def <- ghi ]]", 
-                { name: "link", values: null, render: "<tw-link data-passage=\"abc def\">ghi</tw-link>" }),
-            Case("[[abc def &lt;- ghi ]]", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"abc def\">ghi</tw-link>" }),
             Case("[[abc \\d\\e\\f <- ghi ]]", 
                 { name: "link", values: null, render: "<tw-link data-passage=\"abc def\">ghi</tw-link>" }),
@@ -97,6 +78,7 @@ testCases.set("links",
                 { name: "link", values: null, render: "<tw-link data-passage=\"abc def[]\">ghi{}</tw-link>" }),
         ]
     });
+
 testCases.set("mixedLine",
     {
         rule: "mixedLine",
@@ -134,6 +116,33 @@ testCases.set("mixedLine",
                     values: null, 
                     render: "<p>Hello <tw-link data-passage=\"second passage\">world</tw-link></p>\n<br> \n"
                 }),
+        ]
+    });
+
+testCases.set("InkText", 
+    { 
+        rule: "InkText", 
+        actualTransform: (values) => values,
+        expectedTransform: (values) => values,
+        cases: [
+            Case("<==text==><==>", { name: "InkText", values: "" }),
+            Case("<==text==><==>", { name: "InkText", values: "" }),
+            Case("<==text><==>", { name: "InkText", values: "" }),
+            Case("<==t==><==>", { name: "InkText", values: "" }),
+            Case("<==t><==>", { name: "InkText", values: "" }),
+            Case("<==text==>Hello world<==>", { name: "InkText", values: "Hello world" }),
+            Case("<==text==><Hello> &world<==>", "fail"),
+            Case("<==text==>\\<Hello> &world<==>", { name: "InkText", values: "<Hello> &world" }),
+            Case("<==text==>Hello\n\n\nworld<==>", { name: "InkText", values: "Hello\n\n\nworld" }),
+            Case("<=text==><==>", "fail"),
+            Case("<text==><==>", "fail"),
+            Case("<==text==><=>", "fail"),
+            Case("<==text==><>", "fail"),
+            Case("<==text==>\\<><==>", { name: "InkText", values: "<>" }),
+            Case("<==text==>___<==>", { name: "InkText", values: "___" }),
+            Case("<==text==>[]<==>", { name: "InkText", values: "[]" }),
+            Case("<==text==>{}<==>", { name: "InkText", values: "{}" }),
+            Case("<==text==>\\\\<==>", { name: "InkText", values: "\\\\" }),
         ]
     });
 

@@ -50,6 +50,27 @@ Expression = lines:mixedLine+ _eol
 		return new ParsedObject("lines", lines);
 	}
 
+// Passage section definition: Ink text
+
+InkText = _inkTextStart inkTextChars:((!_inkTextEnd) $(.*)) _inkTextEnd _eol
+	{
+		const domParser = new DOMParser();
+		const toHtml = function(values) {
+
+			let joinedText = values.join("");
+
+			// now we want to unescape this.
+			let doc = domParser.parseFromString(input, "text/html"); 
+			return doc.documentElement.textContent;
+		}
+		return new ParsedObject("inkText", inkTextChars, toHtml);
+	}
+
+_inkTextStart = _angleBracketLeft ("==text==" / "==text" / "==t==" / "==t" ) _angleBracketRight
+_inkTextEnd = ( _angleBracketLeft "==" _angleBracketRight )
+
+// mixedLine 
+
 mixedLine = contents:( pureText / link )+ nls:_nls 
 	{ 
 		const toHtml = function (values) {
@@ -85,8 +106,8 @@ _inner_link_lr = label:pureText (_linkArrowRight / "|") destination:pureText
 _inner_link_rl = destination:pureText _linkArrowLeft label:pureText
 	{ return [label, destination]; }
 
-_linkArrowRight "->" = "->" / "-&gt;"
-_linkArrowLeft "<-" = "<-" / "&lt;-"
+_linkArrowRight "->" = "->"
+_linkArrowLeft "<-" = "<-"
 
 // text
 pureText = chars:(_charUnescaped / _charEscaped)+ 
@@ -106,8 +127,8 @@ _charEscaped = "\\"char:(_angleBracketLeft / _angleBracketRight / [^\r\n]) { ret
 // '\' is used for escaping characters
 _nonTextCharUnescaped = _angleBracketLeft / _angleBracketRight / [\|\[\]{}\r\n_\\] 
 
-_angleBracketLeft "<" = ("&lt;" / "<")
-_angleBracketRight ">" = ("&gt;" / ">")
+_angleBracketLeft "<" = "<"
+_angleBracketRight ">" = ">"
 
 // whitespace
 _eol "endOfLine" = _nl / _eof

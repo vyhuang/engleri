@@ -11,6 +11,7 @@ class Passage {
   name: string;
   tags: string[];
   source: string;
+  unescapedSource: string;
 
   constructor (
     name: string | null = 'Default', 
@@ -23,15 +24,21 @@ class Passage {
     this.name = name;
     this.tags = tags;
     this.source = source;
+    this.unescapedSource = Passage.unescapeHtml(source);
   }
 
   renderTemplate(): HTMLTemplateElement {
-    const parsedSource = parse(this.source);
+    const parsedSource = parse(this.unescapedSource);
     const template = document.createElement("template");
 
     template.innerHTML = parsedSource.render();
 
     return template;
+  }
+
+  static unescapeHtml(source: string) {
+    let doc = new DOMParser().parseFromString(source, "text/html");
+    return doc.documentElement.textContent;
   }
 }
 

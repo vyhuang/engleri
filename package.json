@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run build:grammar && rollup -c && npm run build:css && npm run build:template && npm run build:format",
     "build:grammar": "peggy -c peggy.config.cjs && npm run build:grammar-test",
-    "build:grammar-test": "peggy -o src/grammar/passage_test.js --allowed-start-rules '*' src/grammar/passage.pegjs",
+    "build:grammar-test": "peggy -c peggy.test_config.cjs",
     "build:css": "cp src/story/story.css build/main.css",
     "build:template": "node scripts/build_story_template.js",
     "build:format": "node scripts/build_format.js",
@@ -47,5 +47,8 @@
   "files": [
     "build"
   ],
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "inkjs": "github:vyhuang/inkjs"
+  }
 }
