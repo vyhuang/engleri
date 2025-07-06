@@ -11,32 +11,38 @@
 		-  ink source `<==text==><==>`, `<==t><==>` (allowed once a passage)
 		- [v0.2.1] print lines of text 
 		- [v0.2.2] make choices clickable 
-- [v0.2.0] Figure out state tracking 
+	- [v0.2.3] Figure out state tracking 
+		- game should constantly be tracking game state
+			- this includes all of ink's tracking variables too!
+			- this also means that passages should continue to display already-shown text (unless tagged otherwise)
+				- (this might be possible through abusing the saveToJson/loadFromJson functionality the runtime has)
+		- ink variables & state should be fully accessible & modifiable by the twine engine at all times
+				- this theoretically allows for full out-of-ink support
+	- [v0.2.4] Figure out saving / loading 
 
-- [v0.3.0] Figure out saving / loading 
-
-- [v0.3.1] Add basic markup language `<@style(,style): >`
-    - bold/b
-    - italic/i
-    - strikethrough/s
-    - underline/u
-    - superscript/sp
-    - subscript/sb
-    - code/cd
-    - smallcaps/sc (?)
-- [v0.3.2] Add shortcut styling
-    - `_italic text_`
-    - `__bold text__`
-    - `___bold italic text___`
-- [v0.3.3] Add css markup `<.class_name(,class_name): >` 
-- [v0.3.4] Add click-through sequences `<%seq_annotation(,seq_annotation): text % (text %)>` 
-- [v0.3.5] Add turn-through sequences `<^seq_annotation(,seq_annotation): text % (text %)>` 
-- [v0.3.6] Add basic block markup: 
-    ```
-    << (@style(,style);)(.class_name(,class_name);)
-    TEXT 
-    >>
-    ```
+- [v0.3.x]
+	- [v0.3.1] Add basic markup language `<@style(,style): >`
+			- bold/b
+			- italic/i
+			- strikethrough/s
+			- underline/u
+			- superscript/sp
+			- subscript/sb
+			- code/cd
+			- smallcaps/sc (?)
+	- [v0.3.2] Add shortcut styling
+			- `_italic text_`
+			- `__bold text__`
+			- `___bold italic text___`
+	- [v0.3.3] Add css markup `<.class_name(,class_name): >` 
+	- [v0.3.4] Add click-through sequences `<%seq_annotation(,seq_annotation): text % (text %)>` 
+	- [v0.3.5] Add turn-through sequences `<^seq_annotation(,seq_annotation): text % (text %)>` 
+	- [v0.3.6] Add basic block markup: 
+			```
+			<< (@style(,style);)(.class_name(,class_name);)
+			TEXT 
+			>>
+			```
 
 - [v0.4.0] Passage section headers: 
     - include declarations `<==include==><==>`, `<==i><==>`
