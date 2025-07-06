@@ -7,8 +7,8 @@
 - ~~Write basic tests for grammar & story/passage functionality~~
 
 - [v0.2.x] Integrate inkjs & ink runtime into passage (basic functionality)
-		- [v0.2.0] Implement ink text 'section' syntax 
-			- ink source `<==text==><==>`, `<==t><==>` (allowed once a passage)
+	- [v0.2.0] Implement ink text 'section' syntax 
+		-  ink source `<==text==><==>`, `<==t><==>` (allowed once a passage)
 		- [v0.2.1] print lines of text 
 		- [v0.2.2] make choices clickable 
 - [v0.2.0] Figure out state tracking 
@@ -66,10 +66,11 @@
     - [v0.5.1] ink includes for other passages 
     - [v0.5.2] ink external function 
 
-- [v0.6.0] Add basic variable insertion `{var_name}` 
-- [v0.6.1] Add basic conditional text insertion `{boolean_expression: text}` 
-- [v0.6.2] Add variable support for sequences 
-    - `<%sequence_annotation(?var_name)?: text % (text %)>`
-    - `<^sequence_annotation(?var_name)?: text % (text %)>`
+- [v0.6.x] 
+	- [v0.6.0] Add basic variable insertion `{var_name}` 
+	- [v0.6.1] Add basic conditional text insertion `{boolean_expression: text}` 
+	- [v0.6.2] Add variable support for sequences 
+			- `<%sequence_annotation(?var_name)?: text % (text %)>`
+			- `<^sequence_annotation(?var_name)?: text % (text %)>`
 
 
