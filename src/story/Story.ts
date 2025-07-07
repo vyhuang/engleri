@@ -6,6 +6,7 @@
  */
 import { Passage } from './Passage';
 import { Utils } from './Utils';
+import { Compiler, Story as inkStory } from '../../node_modules/inkjs/ink';
 
 /**
  * An object representing the entire story.  
@@ -19,6 +20,7 @@ class Story {
   workingPassage: Element;
 
   currentPassage: Passage | null;
+  currentInkStory: inkStory | null;
 
   constructor () {
 
@@ -65,7 +67,7 @@ class Story {
     this.workingPassage = workingPassage;
 
     this.currentPassage = null;
-
+    this.currentInkStory = null;
   }
   // end constructor.
 
@@ -111,7 +113,7 @@ class Story {
     // Get passage source.
     const passageTemplate = this.include(passage.name);
 
-    // Overwrite the parsed with the rendered.
+    // Overwrite the passage with the rendered.
     this.workingPassage.innerHTML = "";
     this.workingPassage.appendChild(passageTemplate.content.cloneNode(true));
 
@@ -192,6 +194,10 @@ class Story {
     // Get passage source by name.
     const passageTemplate = this.include(passage.name);
 
+    // Set currentInkStory to the one belonging to this passage 
+    // (note: this has to be done after include())
+    this.currentInkStory = new Compiler(passage.inkSource).Compile();
+
     // Overwrite any existing HTML.
     this.workingPassage.innerHTML = "";
     this.workingPassage.appendChild(passageTemplate.content.cloneNode(true));
@@ -212,6 +218,13 @@ class Story {
   }
 
   /**
+   * Updates the working passage's contents with Ink output.
+   */
+  update() {
+
+  }
+
+  /**
    * Returns the rendered source of a passage by name.
    */
   include (name: string): HTMLTemplateElement {
@@ -226,7 +239,7 @@ class Story {
     }
 
     // Get passage source.
-    let passageSource = passage.renderTemplate();
+    let passageSource = passage.renderStaticElements();
 
     // Return the passage source.
     return passageSource;

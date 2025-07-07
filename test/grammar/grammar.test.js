@@ -27,6 +27,11 @@ describe('rules', () => {
   test('InkText', () => {
     runSuite(testcases, "InkText");
   })
+
+  test('Passage', () => {
+    runSuite(testcases, "ParsedPassage");
+  })
+
 })
 
 function runSuite(testcases, testSuiteName) {
@@ -50,13 +55,6 @@ function runSuite(testcases, testSuiteName) {
       throw new Error(`Testcase '${currentCase}' failed: ${err}`);
     }
   });
-}
-
-function html(testString) {
-    let output = testString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    console.log(output);
-
-    return output;
 }
 
 function checkValuesAndRender(currentCase, startRule, expected, testSuite) {

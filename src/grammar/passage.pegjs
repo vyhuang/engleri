@@ -10,6 +10,7 @@ class ParsedPassage {
 
 		this.includes = includes;
 		this.contents = contents;
+		this.typeName = "ParsedPassage";
 	}
 }
 
@@ -57,7 +58,7 @@ class Link extends ParsedObject {
 
 }}
 
-Expression = chunks:(PassageSource / InkText)* _eol
+Expression = _nls chunks:(InkText / mixedLine)* _nls _eol
 	{
 		let includes = null;
 
@@ -75,21 +76,16 @@ Expression = chunks:(PassageSource / InkText)* _eol
 		return new ParsedPassage([], chunks);
 	}
 
-PassageSource = lines:mixedLine+ _eol
-	{ 
-		return new ParsedObject("lines", lines);
-	}
-
 // Passage block definition: Ink text
 
-InkText = _inkTextStart inkTextChars:(!_inkTextEnd char:. { return char; })* _inkTextEnd _eol
+InkText = _inkTextStart inkTextChars:(!_inkTextEnd char:. { return char; })* _inkTextEnd _nls
 	{
-		toHtml = () => "<div id='ink_block'></div>"
-		return new ParsedObject("InkText", inkTextChars);
+		const toHtml = () => "<div id='ink_block'></div>\n"
+		return new ParsedObject("InkText", inkTextChars, toHtml);
 	}
 
-_inkTextStart = _angleBracketLeft ("==text==" / "==text" / "==t==" / "==t" ) _angleBracketRight
-_inkTextEnd = _angleBracketLeft "==" _angleBracketRight
+_inkTextStart = "<==text==>" / "<==text>" / "<==t==>" / "<==t>" 
+_inkTextEnd = "<==>"
 
 // mixedLine 
 
@@ -112,7 +108,7 @@ mixedLine = contents:( pureText / link )+ nls:_nls
 
 link = _wrappedLink / _twLink
 
-_wrappedLink = _angleBracketLeft"[[" label:pureText destination:("|" dest:pureText { return dest; })? "]]"_angleBracketRight 
+_wrappedLink = "<[[" label:pureText destination:("|" dest:pureText { return dest; })? "]]>"
 	{
 		let dest = destination ? destination : label;
 
@@ -139,7 +135,7 @@ pureText = chars:(_charUnescaped / _charEscaped)+
 
 _charUnescaped = (&(!_nonTextCharUnescaped !_linkArrowRight) char:. { return char; })
 // every character EXCEPT the newline characters can be escaped.
-_charEscaped = "\\"char:(_angleBracketLeft / _angleBracketRight / [^\r\n]) { return char; }
+_charEscaped = "\\"char:("<" / ">" / [^\r\n]) { return char; }
 
 // '<', '>' (and their escaped equivalents) are used for format markup
 // '|', '[', ']' are used for twine links
@@ -147,10 +143,7 @@ _charEscaped = "\\"char:(_angleBracketLeft / _angleBracketRight / [^\r\n]) { ret
 // '\r' and '\n' are used for newlines (so we absolutely don't want to touch them)
 // '_' is used for quick styling
 // '\' is used for escaping characters
-_nonTextCharUnescaped = _angleBracketLeft / _angleBracketRight / [\|\[\]{}\r\n_\\] 
-
-_angleBracketLeft "<" = "<"
-_angleBracketRight ">" = ">"
+_nonTextCharUnescaped = [<>\|\[\]{}\r\n_\\] 
 
 // whitespace
 _eol "endOfLine" = _nl / _eof
@@ -172,6 +165,6 @@ _nls "blankLines" = lines:_nl*
 		return new ParsedObject("newlines", lines, toHtml); 
 	}
 
-_eof "endOfFile" = !.
+_eof "endOfFile" = _ !.
 
 _ "inlineWS" = [ \t]*

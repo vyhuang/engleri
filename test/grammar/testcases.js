@@ -147,4 +147,28 @@ testCases.set("InkText",
         ]
     });
 
+testCases.set("ParsedPassage", 
+    { 
+        rule: "Expression",
+        actualTransform: (values) => values,
+        expectedTransform: (values) => values.split(""),
+        cases: [
+            Case(`
+                    first line
+                    second line (with link) [[link\\_name -> passage\\_name]]
+                    <==text==>
+                    Ink source text goes here:
+                    * choice 1
+                    * choice 2
+                    * choice 3 [] 
+                    - gather 
+                    <> and glue.
+                    <==>
+                `,
+                    { name: "ParsedPassage" }
+            )
+
+        ]
+    });
+
 module.exports = testCases;

@@ -16,6 +16,9 @@ class Passage {
 
   inkSource: string;
 
+  renderedChunks: string[];
+  template: HTMLTemplateElement;
+
   constructor (
     name: string | null = 'Default', 
     tags: string[] | null = [], 
@@ -28,6 +31,7 @@ class Passage {
     this.tags = tags;
     this.source = source;
 
+    this.template = document.createElement("template");
     this.parsePassage();
   }
 
@@ -36,21 +40,28 @@ class Passage {
     this.parsedSource = parse(this.unescapedSource);
   }
 
-  renderTemplate(): HTMLTemplateElement {
-    const template = document.createElement("template");
+  renderStaticElements(): HTMLTemplateElement {
+    let result = Passage.renderChunks(this.parsedSource.contents);
 
-    let renderedHtml = "";
-    this.parsedSource.contents.forEach((chunk) => {
-      renderedHtml += chunk.render();
+    this.renderedChunks = result.chunks;
+    this.inkSource = result.inkSource;
 
-      if (chunk.typeName === "InkText") {
-        this.inkSource = chunk.values.join("");
-      }
-    });
+    this.template.innerHTML = result.chunks.join("");
 
-    template.innerHTML = renderedHtml;
+    return this.template;
+  }
 
-    return template;
+  static renderChunks(sourceChunks: ParsedObject[]): { chunks: string[], inkSource: string } {
+    let inkSource = "";
+    let chunks = sourceChunks.map((chunk) => {
+        if (chunk.typeName === "InkText") {
+          inkSource = chunk.values.join("");
+        }
+
+        return chunk.render(); 
+      });
+
+    return { chunks, inkSource };
   }
 
   static unescapeHtml(source: string) {

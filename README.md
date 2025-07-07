@@ -8,9 +8,9 @@
 
 - [v0.2.x] Integrate inkjs & ink runtime into passage (basic functionality)
 	- [v0.2.0] Implement ink text 'section' syntax 
-		-  ink source `<==text==><==>`, `<==t><==>` (allowed once a passage)
-		- [v0.2.1] print lines of text 
-		- [v0.2.2] make choices clickable 
+		- ~~ink source `<==text==><==>`, `<==t><==>` (allowed once a passage)~~
+	- [v0.2.1] print lines of text 
+	- [v0.2.2] make choices clickable 
 	- [v0.2.3] Figure out state tracking 
 		- game should constantly be tracking game state
 			- this includes all of ink's tracking variables too!
