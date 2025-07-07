@@ -4,11 +4,11 @@
 class ParsedObject {
 	// typeName: 	string
 	// values: 		(ParsedObject | string)[]
-	// reduceToHtml:(ParsedObject | string)[] => string
-	constructor(typeName, values, reduceToHtml) {
+	// reduce:		(ParsedObject | string)[]) => string
+	constructor(typeName, values, reduce) {
 		typeName ??= "";
 		values ??= [];
-		reduceToHtml ??= function(parsedObjects) {
+		reduce ??= function(parsedObjects) {
 
 			let values = parsedObjects.map(function(object) {
 					return (typeof object === "string") ? object : object.render();
@@ -19,11 +19,11 @@ class ParsedObject {
 
 		this.typeName = typeName;
 		this.values = values;
-		this.reduceToHtml = reduceToHtml;
+		this.reduce = reduce;
 	}
 
 	render() {
-		return this.reduceToHtml(this.values);
+		return this.reduce(this.values);
 	}
 }
 
@@ -52,22 +52,13 @@ Expression = lines:mixedLine+ _eol
 
 // Passage section definition: Ink text
 
-InkText = _inkTextStart inkTextChars:((!_inkTextEnd) $(.*)) _inkTextEnd _eol
+InkText = _inkTextStart inkTextChars:(!_inkTextEnd char:. { return char; })* _inkTextEnd _eol
 	{
-		const domParser = new DOMParser();
-		const toHtml = function(values) {
-
-			let joinedText = values.join("");
-
-			// now we want to unescape this.
-			let doc = domParser.parseFromString(input, "text/html"); 
-			return doc.documentElement.textContent;
-		}
-		return new ParsedObject("inkText", inkTextChars, toHtml);
+		return new ParsedObject("InkText", inkTextChars);
 	}
 
 _inkTextStart = _angleBracketLeft ("==text==" / "==text" / "==t==" / "==t" ) _angleBracketRight
-_inkTextEnd = ( _angleBracketLeft "==" _angleBracketRight )
+_inkTextEnd = _angleBracketLeft "==" _angleBracketRight
 
 // mixedLine 
 

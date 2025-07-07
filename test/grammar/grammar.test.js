@@ -24,11 +24,9 @@ describe('rules', () => {
     runSuite(testcases, "mixedLine");
   })
 
-  /*
   test('InkText', () => {
     runSuite(testcases, "InkText");
   })
-    */
 })
 
 function runSuite(testcases, testSuiteName) {
