@@ -1,10 +1,22 @@
 /* The MIT License (MIT) Copyright (c) 2025 Vincent H. */
 
 {{
+class ParsedPassage {
+	// includes:	string[]
+	// contents:		ParsedObject[]
+	constructor(includes, contents) {
+		includes ??= [];
+		contents ??= [];
+
+		this.includes = includes;
+		this.contents = contents;
+	}
+}
+
 class ParsedObject {
 	// typeName: 	string
 	// values: 		(ParsedObject | string)[]
-	// reduce:		(ParsedObject | string)[]) => string
+	// reduce:		(arg: (ParsedObject | string)[]) => string
 	constructor(typeName, values, reduce) {
 		typeName ??= "";
 		values ??= [];
@@ -45,15 +57,34 @@ class Link extends ParsedObject {
 
 }}
 
-Expression = lines:mixedLine+ _eol 
+Expression = chunks:(PassageSource / InkText)* _eol
+	{
+		let includes = null;
+
+		let inkTextCount = 0;
+		chunks.forEach((chunk) => {
+			if (chunk.typeName === "InkText") {
+				inkTextCount += 1;
+			}
+		})
+
+		if (inkTextCount > 1) {
+			throw new Error("There shouldn't be more than one InkText block in a passage!");
+		}
+
+		return new ParsedPassage([], chunks);
+	}
+
+PassageSource = lines:mixedLine+ _eol
 	{ 
 		return new ParsedObject("lines", lines);
 	}
 
-// Passage section definition: Ink text
+// Passage block definition: Ink text
 
 InkText = _inkTextStart inkTextChars:(!_inkTextEnd char:. { return char; })* _inkTextEnd _eol
 	{
+		toHtml = () => "<div id='ink_block'></div>"
 		return new ParsedObject("InkText", inkTextChars);
 	}
 

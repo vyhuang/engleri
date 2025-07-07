@@ -53,7 +53,7 @@
         - must be at the top of the passage
         - only one section is allowed per passage
     ```
-    <==require==>
+    <==include==>
     @passage_name
     #passage_tag
     <==>
