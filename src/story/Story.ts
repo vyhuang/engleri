@@ -21,6 +21,7 @@ class Story {
 
   currentPassage: Passage | null;
   currentInkStory: inkStory | null;
+  inkBlock: Element;
 
   constructor () {
 
@@ -68,6 +69,7 @@ class Story {
 
     this.currentPassage = null;
     this.currentInkStory = null;
+    this.inkBlock = null;
   }
   // end constructor.
 
@@ -117,6 +119,17 @@ class Story {
     this.workingPassage.innerHTML = "";
     this.workingPassage.appendChild(passageTemplate.content.cloneNode(true));
 
+    // Set currentInkStory to the one belonging to this passage 
+    // (note: this has to be done after include())
+    if (passage.inkSource.length > 0) {
+      this.currentInkStory = new Compiler(passage.inkSource).Compile();
+      this.inkBlock = document.querySelector("#ink_block");
+      console.log(this.currentInkStory);
+      this.updateInk();
+    } else {
+      this.currentInkStory = null;
+    }
+
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(
         'click', 
@@ -130,6 +143,35 @@ class Story {
         },
         'tw-link[data-passage]'
       );
+    // Listen for any reader clicking on `<div id='ink_block'>`
+    Utils.addEventListener(      
+      'click', 
+      () => {
+        console.log("ink block clicked");
+        if (this.currentInkStory) {
+          this.updateInk();
+        }
+      },
+      'div#ink_block', 
+    );
+    // Listen for any reader clicking on `<a class='ink_choice'>`
+    Utils.addEventListener(
+      'click',
+      (event) => {
+        console.log("ink choice clicked");
+        if (event.target instanceof HTMLAnchorElement) {
+          // Retrieve data-passage value.
+          const choiceIndex = event.target.getAttribute('choiceIndex');
+          // Update the ink block with the chosen choice.
+          this.updateInk(parseInt(choiceIndex));
+        }
+      },
+      'a.ink_choice'
+    )
+
+    if (this.currentInkStory) {
+      this.updateInk();
+    }
   }
 
   /**
@@ -194,14 +236,22 @@ class Story {
     // Get passage source by name.
     const passageTemplate = this.include(passage.name);
 
-    // Set currentInkStory to the one belonging to this passage 
-    // (note: this has to be done after include())
-    this.currentInkStory = new Compiler(passage.inkSource).Compile();
-
     // Overwrite any existing HTML.
     this.workingPassage.innerHTML = "";
     this.workingPassage.appendChild(passageTemplate.content.cloneNode(true));
 
+    // Set currentInkStory to the one belonging to this passage 
+    // (note: this has to be done after include())
+    if (passage.inkSource.length > 0) {
+      this.currentInkStory = new Compiler(passage.inkSource).Compile();
+      this.inkBlock = document.querySelector("#ink_block");
+      console.log(this.currentInkStory);
+      this.updateInk();
+    } else {
+      this.currentInkStory = null;
+    }
+
+    /*
     // Listen for any reader clicking on `<tw-link>`.
     Utils.addEventListener(      
       'click', 
@@ -215,13 +265,102 @@ class Story {
       },
       'tw-link[data-passage]', 
     );
+
+    // Listen for any reader clicking on `<div id='ink_block'>`
+    Utils.addEventListener(      
+      'click', 
+      () => {
+        if (this.currentInkStory) {
+          this.update();
+        }
+      },
+      'div#ink_block', 
+    );
+
+    // Listen for any reader clicking on `<a class='ink_choice'>`
+    Utils.addEventListener(
+      'click',
+      (event) => {
+        if (event.target instanceof HTMLAnchorElement) {
+          // Retrieve data-passage value.
+          const choiceIndex = event.target.getAttribute('choiceIndex');
+          // Update the ink block with the chosen choice.
+          this.updateInk(parseInt(choiceIndex));
+        }
+      },
+      'a.ink_choice'
+    )
+      */
   }
 
   /**
-   * Updates the working passage's contents with Ink output.
+   * Updates the working passage's contents.
    */
   update() {
+  }
 
+  /**
+   * Update the ink block with new text (if it exists)
+   */
+  updateInk(choiceIndex: number | undefined = -1) {
+    if (this.currentInkStory === null || !this.inkBlock === null) {
+      return;
+    }
+
+    let inkContent : Element | null = this.inkBlock.querySelector("div#ink_content");
+    let inkChoices : Element | null = this.inkBlock.querySelector("div#ink_choices");
+
+    let changeMade = false;
+
+    if (inkContent === null) {
+      inkContent = document.createElement("div");
+      inkContent.id = "ink_content";
+
+      this.inkBlock.appendChild(inkContent);
+      changeMade = true;
+    }
+
+    if (choiceIndex >= 0) {
+      if (inkChoices === null) {
+        throw Error("Unable to find ink_choices div, even though a choice was provided!");
+      }
+
+      this.currentInkStory.ChooseChoiceIndex(choiceIndex);
+      this.inkBlock.removeChild(inkChoices);
+      changeMade = true;
+    } 
+    
+    if (this.currentInkStory.canContinue) {
+      let element = document.createElement("p");
+      element.innerHTML = this.currentInkStory.Continue();
+
+      inkContent.appendChild(element);
+      changeMade = true;
+    } 
+
+    if (inkChoices === null && this.currentInkStory.currentChoices.length > 0 ) {
+      inkChoices = document.createElement("div");
+      inkChoices.id = "ink_choices";
+
+      this.currentInkStory.currentChoices.forEach((choice, index) => {
+        let choiceElement = document.createElement("a");
+        choiceElement.setAttribute("class", "ink_choice");
+        choiceElement.setAttribute("choiceIndex", `${index}`);
+        choiceElement.href = "javascript:void(0)";
+
+        choiceElement.innerText = `${index}. ${choice.text}`;
+
+        inkChoices.appendChild(choiceElement);
+        inkChoices.appendChild(document.createElement("br"));
+      });
+
+      this.inkBlock.appendChild(inkChoices);
+      changeMade = true;
+    } 
+
+    if (changeMade) {
+      this.inkBlock.scroll(0, this.inkBlock.scrollHeight);
+    }
   }
 
   /**

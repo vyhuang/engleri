@@ -8,6 +8,11 @@ body {
     text-align: center;
 }
 
+div#ink_block {
+	height: 70vh;
+	overflow-y: scroll;
+}
+
 tw-icon {
 	font-size: 2em;
 	cursor: pointer;

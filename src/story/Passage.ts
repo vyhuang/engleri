@@ -32,6 +32,7 @@ class Passage {
     this.source = source;
 
     this.template = document.createElement("template");
+    this.inkSource = "";
     this.parsePassage();
   }
 

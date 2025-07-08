@@ -7,21 +7,25 @@
 - ~~Write basic tests for grammar & story/passage functionality~~
 
 - [v0.2.x] Integrate inkjs & ink runtime into passage (basic functionality)
-	- [v0.2.0] Implement ink text 'section' syntax 
+	- ~~[v0.2.0] Implement ink text 'section' syntax~~
 		- ~~ink source `<==text==><==>`, `<==t><==>` (allowed once a passage)~~
-	- [v0.2.1] print lines of text 
-	- [v0.2.2] make choices clickable 
-	- [v0.2.3] Figure out state tracking 
+	- ~~[v0.2.1] print lines of text into <p> blocks~~
+		- ~~new lines should be printed when the passage is clicked~~
+	- ~~[v0.2.2] add choice support~~
+		- ~~choices should be numbered & plain lines of text (should look different than passage links)~~
+	- [v0.2.3] a symbol should be present at the bottom of the ink block when text is still available
+	- [v0.2.4] Figure out state tracking 
 		- game should constantly be tracking game state
 			- this includes all of ink's tracking variables too!
 			- this also means that passages should continue to display already-shown text (unless tagged otherwise)
 				- (this might be possible through abusing the saveToJson/loadFromJson functionality the runtime has)
 		- ink variables & state should be fully accessible & modifiable by the twine engine at all times
 			- this theoretically allows for full out-of-ink support
-	- [v0.2.4] Add basic variable insertion 
+	- [v0.2.5] Add basic variable insertion 
 		- `<$var_name>` -- reactive insertion (the value can change after it's been shown) 
 		- `{var_name}` -- static insertion (the value will not change after it's been shown)
-	- [v0.2.4] Figure out saving / loading 
+			- obviously this is already supported in ink -- we want to support it in general passage markup.
+	- [v0.2.6] Figure out saving / loading 
 
 - [v0.3.x]
 	- [v0.3.1] Add basic markup language `<@style(,style): >`. possible styles:
