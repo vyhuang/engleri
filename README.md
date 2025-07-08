@@ -73,6 +73,8 @@
     ~ world_state = "grim"
     <==>
     ```
+    - html block declarations `<==html==><==>`, `<==h><==>`
+    	- multiple sections allowed per passage  
 
 - [v0.5.x] Add additional ink support: 
 	- [v0.5.1] ink INCLUDE implementation
@@ -93,5 +95,28 @@
 			- text (current text being displayed)
 	- [v0.6.2] Add click-handler markup
 		- `<[text]function_name(,function_name)>`
+ 
+  - [v0.7.x] image support
+	- [0.7.0] Add custom markup to support base64 images (PNG & SVG): `<(image alt text)base64:source_string[;.css_class_name, .css_class_name]>`
+	- [0.7.1] Embed SVG images from [game-icons.net](https://game-icons.net/): `<()icon:icon_name[;.css_class_name[,.css_class_name]]>`
+		- alt text should be inserted automatically -- which will require some work
+		- the website can be scraped for icon descriptions
+			- these descriptions can be bundled with a static version of the icon pack
+	- [0.7.2] Add support for minor icon manipulation: `<()icon:icon_name[;@[[background/foreground].[field]=[value][,[background/foreground].[field]=[value]]]>`
+		- background:
+			- gradient
+			- coloring
+			- shape
+		- foreground:
+			- gradient
+			- coloring
+			- transformations (mirror/flip/rotate)
+	- [0.7.3] Add support for relative paths to image files: `<(image alt text)path:image_path>` 
+	- [0.7.4] Add support for truncated images: `<&crop=[css manipulation idk](image alt text) ... >`
+		- when initially shown, create a popup showing the full image	
+		- when popup is closed, a version of the image cropped vertically is embedded into the passage text
+			- ...it looks like this is going to require significant fiddling with CSS [mdn](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+			- there should be a magnifying icon to indicate it's still clickable
+		- if the cropped image is clicked, the popup is shown again.
 
 
