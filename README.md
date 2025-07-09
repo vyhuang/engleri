@@ -13,21 +13,24 @@
 		- ~~new lines should be printed when the passage is clicked~~
 	- ~~[v0.2.2] add choice support~~
 		- ~~choices should be numbered & plain lines of text (should look different than passage links)~~
-	- [v0.2.3] a symbol should be present at the bottom of the ink block when text is still available
-	- [v0.2.4] Figure out state tracking 
+	- ~~[v0.2.3] a symbol should be present at the bottom of the ink block when text is still available~~
+	- [v0.2.4] Define a 'default' ink-content passage (with pure HTML markup) and insert it into passage
+	- [v0.2.5] Allow users to define their own ink-content passage (with pure HTML markup) and override default ink-content passage if present
+	- [v0.2.6] Figure out state tracking 
 		- game should constantly be tracking game state
 			- this includes all of ink's tracking variables too!
 			- this also means that passages should continue to display already-shown text (unless tagged otherwise)
 				- (this might be possible through abusing the saveToJson/loadFromJson functionality the runtime has)
 		- ink variables & state should be fully accessible & modifiable by the twine engine at all times
 			- this theoretically allows for full out-of-ink support
-	- [v0.2.5] Add basic variable insertion 
+	- [v0.2.7] Add basic variable insertion 
 		- `<$var_name>` -- reactive insertion (the value can change after it's been shown) 
 		- `{var_name}` -- static insertion (the value will not change after it's been shown)
 			- obviously this is already supported in ink -- we want to support it in general passage markup.
-	- [v0.2.6] Figure out saving / loading 
+	- [v0.2.8] Figure out basic 'settings' dialogue / button layout
+	- [v0.2.9] Figure out saving / loading 
 
-- [v0.3.x]
+- [v0.3.x] Advanced styling
 	- [v0.3.1] Add basic markup language `<@style(,style): >`. possible styles:
 		- bold/b
 		- italic/i
@@ -95,14 +98,23 @@
 			- text (current text being displayed)
 	- [v0.6.2] Add click-handler markup
 		- `<[text]function_name(,function_name)>`
+
+  - [v0.7.x] double-check basic twine story format stuff
+  	- Make sure that the JS in 'script' tagged passages (or the Story Javascript script) runs
+	- Make sure that the CSS in 'style' tagged passages (or the Story Stylesheet passage) runs
+	- Properly rocess the StoryData special passage
+	- Properly Display a passage on game start as specified in StoryData
  
-  - [v0.7.x] image support
-	- [0.7.0] Add custom markup to support base64 images (PNG & SVG): `<(image alt text)base64:source_string[;.css_class_name, .css_class_name]>`
-	- [0.7.1] Embed SVG images from [game-icons.net](https://game-icons.net/): `<()icon:icon_name[;.css_class_name[,.css_class_name]]>`
+  - [v0.8.x] image support
+	- [v0.8.0] Add custom markup to support base64 images (PNG & SVG): 
+		- `<(image alt text)base64:source_string[;.css_class_name, .css_class_name]>`
+	- [v0.8.1] Embed SVG images from [game-icons.net](https://game-icons.net/): 
+		- `<()icon:icon_name[;.css_class_name[,.css_class_name]]>`
 		- alt text should be inserted automatically -- which will require some work
 		- the website can be scraped for icon descriptions
 			- these descriptions can be bundled with a static version of the icon pack
-	- [0.7.2] Add support for minor icon manipulation: `<()icon:icon_name[;@[[background/foreground].[field]=[value][,[background/foreground].[field]=[value]]]>`
+	- [v0.8.2] Add support for minor icon manipulation: 
+		- `<()icon:icon_name[;@[[background/foreground].[field]=[value][,[background/foreground].[field]=[value]]]>`
 		- background:
 			- gradient
 			- coloring
@@ -111,12 +123,33 @@
 			- gradient
 			- coloring
 			- transformations (mirror/flip/rotate)
-	- [0.7.3] Add support for relative paths to image files: `<(image alt text)path:image_path>` 
-	- [0.7.4] Add support for truncated images: `<&crop=[css manipulation idk](image alt text) ... >`
+	- [v0.8.3] Add support for relative paths to image files: 
+		- `<(image alt text)path:image_path>` 
+	- [v0.8.4] Add support for truncated images: 
+		- `<&crop=[css manipulation idk](image alt text) ... >`
 		- when initially shown, create a popup showing the full image	
 		- when popup is closed, a version of the image cropped vertically is embedded into the passage text
 			- ...it looks like this is going to require significant fiddling with CSS [mdn](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
 			- there should be a magnifying icon to indicate it's still clickable
 		- if the cropped image is clicked, the popup is shown again.
 
-
+	- [v0.9.x] final checks
+		- [v0.9.0] flesh out grammar tests
+		- [v0.9.1] decide on & add default CSS theme
+			- text-centering
+			- clickable elements?
+				- links
+				- sequences
+				- ink-content block element
+			- ink-block integration into main passage (dividers?)
+		- [v0.9.2] allow additional theme settings
+			- author should be able to provide alternative to defaults
+			- player should always be able to use default
+		- [v0.9.2] flesh out component tests
+		- [v0.9.3] work on basic documentation
+		- [v0.9.4] implement basic e2e tests
+		- [v0.9.5] solicit feedback from Twine discord
+		- [v0.9.6] implement feedback from Twine discord (1-2 weeks)
+		- [v0.9.7] solicit more feedback (& refine stuff you hadn't thought of earlier)
+		- [v0.9.8] implement more feedback from Twine discord
+		- [v0.9.9] final documentation pass

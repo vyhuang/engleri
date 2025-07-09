@@ -143,16 +143,16 @@ class Story {
         },
         'tw-link[data-passage]'
       );
-    // Listen for any reader clicking on `<div id='ink_block'>`
+    // Listen for any reader clicking on `<div id='ink_content'>` or `<div id='tap_reminder'>`
     Utils.addEventListener(      
       'click', 
       () => {
-        console.log("ink block clicked");
+        console.log("ink content clicked");
         if (this.currentInkStory) {
           this.updateInk();
         }
       },
-      'div#ink_block', 
+      'div#ink_content,div#tap_reminder', 
     );
     // Listen for any reader clicking on `<a class='ink_choice'>`
     Utils.addEventListener(
@@ -309,6 +309,7 @@ class Story {
 
     let inkContent : Element | null = this.inkBlock.querySelector("div#ink_content");
     let inkChoices : Element | null = this.inkBlock.querySelector("div#ink_choices");
+    let tapReminder : Element | null = this.inkBlock.querySelector("div#tap_reminder");
 
     let changeMade = false;
 
@@ -320,13 +321,33 @@ class Story {
       changeMade = true;
     }
 
-    if (choiceIndex >= 0) {
-      if (inkChoices === null) {
-        throw Error("Unable to find ink_choices div, even though a choice was provided!");
-      }
+    if (inkChoices === null) {
+      inkChoices = document.createElement("div");
+      inkChoices.id = "ink_choices";
+      inkChoices.setAttribute("hidden", "hidden");
 
+      this.inkBlock.appendChild(inkChoices);
+      changeMade = true;
+    }
+
+    if (tapReminder === null) {
+      tapReminder = document.createElement("div");
+      tapReminder.id = "tap_reminder";
+      tapReminder.textContent = "(Tap the screen to continue)"
+      tapReminder.setAttribute("hidden", "hidden");
+
+      this.inkBlock.appendChild(tapReminder);
+      changeMade = true;
+    }
+
+    if (choiceIndex >= 0) {
+      if (inkChoices.getAttribute("hidden")) {
+        throw new Error("#ink_choices element should not be hidden!")
+      }
       this.currentInkStory.ChooseChoiceIndex(choiceIndex);
-      this.inkBlock.removeChild(inkChoices);
+      inkChoices.setAttribute("hidden", "hidden");
+      inkChoices.innerHTML = "";
+
       changeMade = true;
     } 
     
@@ -335,12 +356,17 @@ class Story {
       element.innerHTML = this.currentInkStory.Continue();
 
       inkContent.appendChild(element);
+
       changeMade = true;
     } 
+    if (this.currentInkStory.canContinue) {
+      tapReminder.removeAttribute("hidden");
+    } else {
+      tapReminder.setAttribute("hidden", "hidden");
+    }
 
-    if (inkChoices === null && this.currentInkStory.currentChoices.length > 0 ) {
-      inkChoices = document.createElement("div");
-      inkChoices.id = "ink_choices";
+
+    if (inkChoices.getAttribute("hidden") && this.currentInkStory.currentChoices.length > 0 ) {
 
       this.currentInkStory.currentChoices.forEach((choice, index) => {
         let choiceElement = document.createElement("a");
@@ -354,7 +380,7 @@ class Story {
         inkChoices.appendChild(document.createElement("br"));
       });
 
-      this.inkBlock.appendChild(inkChoices);
+      inkChoices.removeAttribute("hidden");
       changeMade = true;
     } 
 
