@@ -28,6 +28,10 @@ describe('rules', () => {
     runSuite(testcases, "InkText");
   })
 
+  test('HtmlBlock', () => {
+    runSuite(testcases, "HtmlBlock");
+  })
+
   test('Passage', () => {
     runSuite(testcases, "ParsedPassage");
   })

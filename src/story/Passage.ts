@@ -66,8 +66,7 @@ class Passage {
   }
 
   static unescapeHtml(source: string) {
-    let doc = new DOMParser().parseFromString(source, "text/html");
-    return doc.documentElement.textContent;
+    return source.replaceAll("&amp;", "&").replaceAll("&lt;", "<").replaceAll("&gt;", ">");
   }
 }
 

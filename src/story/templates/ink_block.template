@@ -1,0 +1,27 @@
+<==html==>
+\<!-- Styling for the ink block -->
+\<style>
+	div#tap_reminder {
+		opacity: 1;
+		animation: tapFade;
+		animation-duration: 4s;
+		animation-iteration-count: infinite;
+	}
+
+	@keyframes tapFade {
+		0%,100% { opacity: 0 }
+		50% { opacity: 0.9 }
+	}
+\</style>
+\<div id="ink_content">
+	<p id="content_template" hidden="hidden">{content}</p>
+\</div>
+\<div id="ink_choices" hidden="hidden">
+	<a id="choice_template" class="ink_choice" choiceIndex="{choiceIndex}" href="javascript:void(0)" hidden="hidden">
+		{choiceIndex}. {choiceText}
+	</a>
+\</div>
+\<div id="tap_reminder" hidden="hidden">
+	(Click or Tap)
+\</div>
+<==>

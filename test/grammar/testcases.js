@@ -125,25 +125,63 @@ testCases.set("InkText",
         actualTransform: (values) => values,
         expectedTransform: (values) => values.split(""),
         cases: [
-            Case("<==text==><==>", { name: "InkText", values: "" }),
-            Case("<==text==><==>", { name: "InkText", values: "" }),
-            Case("<==text><==>", { name: "InkText", values: "" }),
-            Case("<==t==><==>", { name: "InkText", values: "" }),
-            Case("<==t><==>", { name: "InkText", values: "" }),
-            Case("<==text==>Hello world<==>", { name: "InkText", values: "Hello world" }),
-            Case("<==text==><Hello> &world<==>", { name: "InkText", values: "<Hello> &world"}),
-            Case("<==text==>\\<Hello> &world<==>", { name: "InkText", values: "\\<Hello> &world" }),
-            Case("<==text==>Hello\n\n\nworld<==>", { name: "InkText", values: "Hello\n\n\nworld" }),
-            Case("<=text==><==>", "fail"),
-            Case("<=text==><==><==>", "fail"),
-            Case("<text==><==>", "fail"),
-            Case("<==text==><=>", "fail"),
-            Case("<==text==><>", "fail"),
-            Case("<==text==><><==>", { name: "InkText", values: "<>" }),
-            Case("<==text==>___<==>", { name: "InkText", values: "___" }),
-            Case("<==text==>[]<==>", { name: "InkText", values: "[]" }),
-            Case("<==text==>{}<==>", { name: "InkText", values: "{}" }),
-            Case("<==text==>\\\\<==>", { name: "InkText", values: "\\\\" }),
+            Case("<==text==>\n<==>", { name: "InkText", values: "" }),
+            Case("<==text==>\n<==>", { name: "InkText", values: "" }),
+            Case("<==text>\n<==>", { name: "InkText", values: "" }),
+            Case("<==t==>\n<==>", { name: "InkText", values: "" }),
+            Case("<==t>\n<==>", { name: "InkText", values: "" }),
+            Case("<==t>\n\\<==>\n<==>", { name: "InkText", values: "<==>\n" }),
+            Case("<==t>\<==>\n<==>", "fail"),
+            Case("<==t>\n\<==><==>", "fail"),
+            Case("<==text==>\nHello world\n<==>", { name: "InkText", values: "Hello world\n" }),
+            Case("<==text==>\n <Hello> &world\n<==>", { name: "InkText", values: " <Hello> &world\n"}),
+            Case("<==text==>\n\\<Hello> &world\n<==>", { name: "InkText", values: "<Hello> &world\n" }),
+            Case("<==text==>\nHello\n\n\nworld\n<==>", { name: "InkText", values: "Hello\n\n\nworld\n" }),
+            Case("<==text==><==>", "fail"),
+            Case("<=text==>\n<==>", "fail"),
+            Case("<=text==>\n<==><==>", "fail"),
+            Case("<text==>\n<==>", "fail"),
+            Case("<==text==>\n<=>", "fail"),
+            Case("<==text==>\n<>", "fail"),
+            Case("<==text==>\n\\<>\n<==>", { name: "InkText", values: "<>\n" }),
+            Case("<==text==>\n___\n<==>", { name: "InkText", values: "___\n" }),
+            Case("<==text==>\n[]\n<==>", { name: "InkText", values: "[]\n" }),
+            Case("<==text==>\n{}\n<==>", { name: "InkText", values: "{}\n" }),
+            Case("<==text==>\n\\\\\n<==>", { name: "InkText", values: "\\\\\n" }),
+        ]
+    });
+
+testCases.set("HtmlBlock",
+    {
+        rule: "HtmlBlock", 
+        actualTransform: (values) => values,
+        expectedTransform: (values) => values.split(""),
+        cases: [
+            Case("<==html==>\n<==>", { name: "HtmlBlock", values: "" }),
+            Case("<==html==>\n<==>", { name: "HtmlBlock", values: "" }),
+            Case("<==html==>\n<==>", { name: "HtmlBlock", values: "" }),
+            Case("<==html>\n<==>", { name: "HtmlBlock", values: "" }),
+            Case("<==h==>\n<==>", { name: "HtmlBlock", values: "" }),
+            Case("<==h>\n<==>", { name: "HtmlBlock", values: "" }),
+            Case("<==h>\n\\<==>\n<==>", { name: "HtmlBlock", values: "<==>\n" }),
+            Case("<==h>\<==>\n<==>", "fail"),
+            Case("<==h>\n\<==><==>", "fail"),
+            Case("<==html==>\n\\<div></div>\n<==>", { name: "HtmlBlock", values: "<div></div>\n" }),
+            Case("<==html==>\n\\<Hello> &world\n<==>", { name: "HtmlBlock", values: "<Hello> &world\n"}),
+            Case("<==html==>\n <Hello> &world\n<==>", { name: "HtmlBlock", values: " <Hello> &world\n"}),
+            Case("<==html==>\n\\<Hello> &world\n<==>", { name: "HtmlBlock", values: "<Hello> &world\n" }),
+            Case("<==html==>\nHello\n\n\nworld\n<==>", { name: "HtmlBlock", values: "Hello\n\n\nworld\n" }),
+            Case("<==html==><==>", "fail"),
+            Case("<=html==>\n<==>", "fail"),
+            Case("<=html==>\n<==><==>", "fail"),
+            Case("<html==>\n<==>", "fail"),
+            Case("<==html==>\n<=>", "fail"),
+            Case("<==html==>\n<>", "fail"),
+            Case("<==html==>\n\\<>\n<==>", { name: "HtmlBlock", values: "<>\n" }),
+            Case("<==html==>\n___\n<==>", { name: "HtmlBlock", values: "___\n" }),
+            Case("<==html==>\n[]\n<==>", { name: "HtmlBlock", values: "[]\n" }),
+            Case("<==html==>\n{}\n<==>", { name: "HtmlBlock", values: "{}\n" }),
+            Case("<==html==>\n\\\\\n<==>", { name: "HtmlBlock", values: "\\\\\n" }),
         ]
     });
 
@@ -156,14 +194,53 @@ testCases.set("ParsedPassage",
             Case(`
                     first line
                     second line (with link) [[link\\_name -> passage\\_name]]
-                    <==text==>
+                    \n<==text==>
                     Ink source text goes here:
                     * choice 1
                     * choice 2
                     * choice 3 [] 
                     - gather 
                     <> and glue.
-                    <==>
+                    \n<==>
+                    abc
+                `,
+                    { name: "ParsedPassage" }
+            ),
+            Case(`
+                    first line
+                    second line (with link) [[link\\_name -> passage\\_name]]
+                    \n<==html==>
+                        <div class='test'>
+                            <a href='javascript:void(0)'></a>
+                        </div>
+                    \n<==>
+                    abc
+                `,
+                    { name: "ParsedPassage" }
+            ),
+            Case(`
+                    first line
+                    second line (with link) [[link\\_name -> passage\\_name]]
+                    \n<==html==>
+                        <div class='test'>
+                            <a href='javascript:void(0)'></a>
+                        </div>
+                    \n<==>
+                    abc
+                    \n<==text==>
+                    Ink source text goes here:
+                    * choice 1
+                    * choice 2
+                    * choice 3 [] 
+                    - gather 
+                    <> and glue.
+                    \n<==>
+                    \n<==html==>
+                        <div class='test'>
+                            <a href='javascript:void(0)'></a>
+                        </div>
+                    \n<==>
+                    def
                 `,
                     { name: "ParsedPassage" }
             )

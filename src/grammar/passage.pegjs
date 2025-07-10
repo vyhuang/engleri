@@ -58,7 +58,7 @@ class Link extends ParsedObject {
 
 }}
 
-Expression = _nls chunks:(InkText / mixedLine)* _nls _eol
+Expression = _nls chunks:(InkText / HtmlBlock / mixedLine)* _nls _eol
 	{
 		let includes = null;
 
@@ -76,16 +76,42 @@ Expression = _nls chunks:(InkText / mixedLine)* _nls _eol
 		return new ParsedPassage([], chunks);
 	}
 
+// Passage block chars
+
+_passageLine = c1:("\\<" { return "<"; } / [^<]) c2:[^\r\n]* c3:(_nl { return "\n"; })
+	{ 
+    	let result = [];
+        if (c1) {
+        	result.push(c1);
+        }
+        if (c2) {
+        	result.push(c2);
+        }
+        if (c3) {
+        	result.push(c3);
+        }
+		return result;
+    }
+_passageEnd = "<==>" _eol
+
 // Passage block definition: Ink text
 
-InkText = _inkTextStart inkTextChars:(!_inkTextEnd char:. { return char; })* _inkTextEnd _nls
+InkText = _inkTextStart _eol lines:_passageLine* _passageEnd _nls
 	{
 		const toHtml = () => "<div id='ink_block'></div>\n"
-		return new ParsedObject("InkText", inkTextChars, toHtml);
+		return new ParsedObject("InkText", lines.flat(Infinity), toHtml);
 	}
 
 _inkTextStart = "<==text==>" / "<==text>" / "<==t==>" / "<==t>" 
-_inkTextEnd = "<==>"
+
+// Passage block definition: html
+
+HtmlBlock = _htmlStart _eol lines:_passageLine* _passageEnd _nls
+	{
+		return new ParsedObject("HtmlBlock", lines.flat(Infinity));
+	}
+	
+_htmlStart = "<==html==>" / "<==html>" / "<==h==>" / "<==h>"
 
 // mixedLine 
 

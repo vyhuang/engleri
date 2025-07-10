@@ -15,6 +15,7 @@ import { Compiler, Story as inkStory } from '../../node_modules/inkjs/ink';
 class Story {
   name: string | null;
   passages: Passage[];
+  defaultPassages: Map<String,Passage[]>;
 
   storyData: Element;
   workingPassage: Element;
@@ -60,6 +61,41 @@ class Story {
         element.innerHTML,
       ));
     });
+
+    this.defaultPassages = new Map();
+
+    // Create passage from `<tw-storydefaults>` elements, and compile them to 
+    // internal passages as appropriate
+    document.querySelectorAll('tw-storydefaults').forEach((element) => {
+      // Access any potential tags.
+      let tagsValue = element.getAttribute('tags');
+
+      // Does the 'tags' attribute exist?
+      let tags: string[];
+      if (tagsValue !== '' && tagsValue) {
+        // Attempt to split by space.
+        tags = tagsValue.split(' ');
+      } else {
+        // It did not exist, so we create it as an empty array.
+        tags = [];
+      }
+
+      tags.forEach((tag) => {
+        let passage = new Passage(
+          element.getAttribute('name'),
+          tags,
+          element.innerHTML);
+        
+        console.log(passage);
+
+        if (this.defaultPassages.has(tag)) {
+          this.defaultPassages.get(tag).push(passage);
+        } else {
+          let passageList = [passage]
+          this.defaultPassages.set(tag, passageList);
+        }
+      })
+    })
 
     let workingPassage;
     if (!(workingPassage = document.querySelector('tw-passage'))) {
@@ -123,7 +159,10 @@ class Story {
     // (note: this has to be done after include())
     if (passage.inkSource.length > 0) {
       this.currentInkStory = new Compiler(passage.inkSource).Compile();
-      this.inkBlock = document.querySelector("#ink_block");
+
+      this.renderDefaultPassageToSelector("ink_block", "basic_ink_block", "div#ink_block");
+      this.inkBlock = this.workingPassage.querySelector("#ink_block");
+
       console.log(this.currentInkStory);
       this.updateInk();
     } else {
@@ -191,16 +230,18 @@ class Story {
    * Returns a Passage object by name from internal collection. If none exists, returns null.
    * The Twine editor prevents multiple passages from having the same name, so
    * this always returns the first search result.
-   * @function getPassageByName
-   * @param {string} name - name of the passage
-   * @returns {Passage|null} Passage object or null
    */
-  getPassageByName (name: string): Passage | null {
+  getPassageByName (name: string, tag?: string): Passage | null {
     // Create default value
     let passage : Passage | null = null;
 
     // Search for any passages with the name
-    const result = this.passages.filter((p) => p.name === name);
+    let result: Passage[] = [];
+    if (tag && this.defaultPassages.has(tag)) {
+      result = this.defaultPassages.get(tag).filter((p) => p.name === name);
+    } else {
+      result = this.passages.filter((p) => p.name === name);
+    }
 
     // Were any found?
     if (result.length !== 0) {
@@ -244,7 +285,10 @@ class Story {
     // (note: this has to be done after include())
     if (passage.inkSource.length > 0) {
       this.currentInkStory = new Compiler(passage.inkSource).Compile();
-      this.inkBlock = document.querySelector("#ink_block");
+
+      this.renderDefaultPassageToSelector("ink_block", "basic_ink_block", "div#ink_block");
+      this.inkBlock = this.workingPassage.querySelector("#ink_block");
+
       console.log(this.currentInkStory);
       this.updateInk();
     } else {
@@ -308,52 +352,38 @@ class Story {
     }
 
     let inkContent : Element | null = this.inkBlock.querySelector("div#ink_content");
+    let contentTemplate = this.inkBlock.querySelector('#content_template');
     let inkChoices : Element | null = this.inkBlock.querySelector("div#ink_choices");
+    let choiceTemplate = this.inkBlock.querySelector('#choice_template');
     let tapReminder : Element | null = this.inkBlock.querySelector("div#tap_reminder");
 
     let changeMade = false;
-
-    if (inkContent === null) {
-      inkContent = document.createElement("div");
-      inkContent.id = "ink_content";
-
-      this.inkBlock.appendChild(inkContent);
-      changeMade = true;
-    }
-
-    if (inkChoices === null) {
-      inkChoices = document.createElement("div");
-      inkChoices.id = "ink_choices";
-      inkChoices.setAttribute("hidden", "hidden");
-
-      this.inkBlock.appendChild(inkChoices);
-      changeMade = true;
-    }
-
-    if (tapReminder === null) {
-      tapReminder = document.createElement("div");
-      tapReminder.id = "tap_reminder";
-      tapReminder.textContent = "(Tap the screen to continue)"
-      tapReminder.setAttribute("hidden", "hidden");
-
-      this.inkBlock.appendChild(tapReminder);
-      changeMade = true;
-    }
-
     if (choiceIndex >= 0) {
       if (inkChoices.getAttribute("hidden")) {
         throw new Error("#ink_choices element should not be hidden!")
       }
       this.currentInkStory.ChooseChoiceIndex(choiceIndex);
       inkChoices.setAttribute("hidden", "hidden");
-      inkChoices.innerHTML = "";
+      inkChoices.querySelectorAll(".ink_choice").forEach(
+        (choiceElement) => {
+          if (choiceElement.id === "choice_template") {
+            return;
+          }
+          choiceElement.parentElement.removeChild(choiceElement);
+        });
 
       changeMade = true;
     } 
     
     if (this.currentInkStory.canContinue) {
-      let element = document.createElement("p");
-      element.innerHTML = this.currentInkStory.Continue();
+      let element = contentTemplate.cloneNode() as Element
+      element.id = "";
+      element.removeAttribute("hidden");
+
+      let nextString = this.currentInkStory.Continue()
+
+      let elementInnerHTML = contentTemplate.innerHTML.replace("{content}", nextString);
+      element.innerHTML = elementInnerHTML;
 
       inkContent.appendChild(element);
 
@@ -369,15 +399,18 @@ class Story {
     if (inkChoices.getAttribute("hidden") && this.currentInkStory.currentChoices.length > 0 ) {
 
       this.currentInkStory.currentChoices.forEach((choice, index) => {
-        let choiceElement = document.createElement("a");
+        let choiceElement = choiceTemplate.cloneNode() as Element;
+        choiceElement.id = "";
         choiceElement.setAttribute("class", "ink_choice");
         choiceElement.setAttribute("choiceIndex", `${index}`);
-        choiceElement.href = "javascript:void(0)";
+        choiceElement.setAttribute("href", "javascript:void(0)");
+        choiceElement.removeAttribute("hidden");
 
-        choiceElement.innerText = `${index}. ${choice.text}`;
+        let elementInnerHtml = choiceTemplate.innerHTML.replace("{choiceIndex}", `${index}`).replace("{choiceText}", choice.text);
+        choiceElement.innerHTML = elementInnerHtml;
+        choiceElement.appendChild(document.createElement("br"));
 
         inkChoices.appendChild(choiceElement);
-        inkChoices.appendChild(document.createElement("br"));
       });
 
       inkChoices.removeAttribute("hidden");
@@ -418,11 +451,37 @@ class Story {
     const passageTemplate = this.include(passageName);
 
     // Replace the HTML of the selector (if valid).
-    let element = document.querySelector(selector);
+    let element = this.workingPassage.querySelector(selector);
     if (element) {
       element.innerHTML = "";
       element.appendChild(passageTemplate.content.cloneNode(true));
     }
+  }
+
+  /**
+   * Render a default passage to any/all element(s) matching query selector
+   */
+  renderDefaultPassageToSelector (tag: string, passageName: string, selector: string) {
+    // Search for passage by name.
+    const passage = this.getPassageByName(passageName, tag);
+
+    // Does this passage exist?
+    if (passage === null) {
+      // It does not exist.
+      // Throw error.
+      throw new Error('There is no passage with name ' + name);
+    }
+
+    // Get passage source.
+    let passageTemplate = passage.renderStaticElements();
+
+    // Replace the HTML of the selector (if valid).
+    let element = this.workingPassage.querySelector(selector);
+    if (element) {
+      element.innerHTML = "";
+      element.appendChild(passageTemplate.content.cloneNode(true));
+    }
+
   }
 
   /**

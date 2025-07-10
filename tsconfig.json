@@ -4,7 +4,8 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "lib": ["ES2015", "dom"],
+    "lib": ["ESNext", "dom"],
+    "target": "es6",
   },
   "exclude": ["**/*.pegjs"],
 }

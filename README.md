@@ -14,7 +14,7 @@
 	- ~~[v0.2.2] add choice support~~
 		- ~~choices should be numbered & plain lines of text (should look different than passage links)~~
 	- ~~[v0.2.3] a symbol should be present at the bottom of the ink block when text is still available~~
-	- [v0.2.4] Define a 'default' ink-content passage (with pure HTML markup) and insert it into passage
+	- ~~[v0.2.4] Define a 'default' ink-content passage (with pure HTML markup) and insert it into passage~~
 	- [v0.2.5] Allow users to define their own ink-content passage (with pure HTML markup) and override default ink-content passage if present
 	- [v0.2.6] Figure out state tracking 
 		- game should constantly be tracking game state
