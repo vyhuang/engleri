@@ -11,6 +11,7 @@
           "edge": "15"
         }
       }
-    ]
+    ],
+    ["@babel/preset-typescript"]
   ]
 }

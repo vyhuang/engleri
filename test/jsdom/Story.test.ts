@@ -8,17 +8,37 @@ describe('Story', () => {
     <tw-storydata name="Test" startnode="1" creator="jasmine" creator-version="1.2.3">
       <tw-passagedata pid="1" name="Test Passage" tags="tag1 tag2">Hello world</tw-passagedata>
       <tw-passagedata pid="2" name="Test Passage 2" tags="tag2">Hello world 2</tw-passagedata>
-      <tw-passagedata pid="3" name="Test Passage 3" tags=""><div><p><span>Test</span><p></div></tw-passagedata>
+      <tw-passagedata pid="3" name="Test Passage 3" tags="">
+        \n&lt;==html==&gt;\n
+          <div><p><span>Test</span><p></div>
+        \n&lt;==&gt;
+      </tw-passagedata>
       <tw-passagedata pid="4" name="Test Passage 4" tags=""></tw-passagedata>
       <tw-passagedata pid="5" name="Test Passage 5" tags="">[[Test Passage]]</tw-passagedata>
       <script type="text/twine-javascript">window.scriptRan = true;</script>
       <style type="text/twine-css">body { color: blue }</style>
    </tw-storydata>
    <tw-story>
-   <tw-sidebar>
-      <tw-icon tabindex="0" alt="Undo" title="Undo">↶</tw-icon>
-      <tw-icon tabindex="1" alt="Redo" title="Redo">↷</tw-icon>
-    </tw-sidebar>
+    <tw-storydefaults tags="ink_block" name="basic_ink_block">
+      \n&lt;==html==&gt;
+      \\<!-- Styling for the ink block -->
+      \\<div id="ink_content">
+        <p id="content_template" hidden="hidden">{content}</p>
+      \\</div>
+      \\<div id="ink_choices" hidden="hidden">
+        <a id="choice_template" class="ink_choice" choiceindex="{choiceIndex}" href="javascript:void(0)" hidden="hidden">
+          {choiceIndex}. {choiceText}
+        </a>
+      \\</div>
+      \\<div id="tap_reminder" hidden="hidden">
+        (Click or Tap)
+      \\</div>
+      \n&lt;==&gt;
+    </tw-storydefaults>
+    <tw-sidebar>
+        <tw-icon tabindex="0" alt="Undo" title="Undo">↶</tw-icon>
+        <tw-icon tabindex="1" alt="Redo" title="Redo">↷</tw-icon>
+      </tw-sidebar>
     <tw-passage class="passage" aria-live="polite"></tw-passage></tw-story>`;
 
     // Create new Story instance.
@@ -115,11 +135,28 @@ describe('Story', () => {
           <style type="text/twine-css"></style>
       </tw-storydata>
       <tw-story>
-      <tw-sidebar>
+        <tw-storydefaults tags="ink_block" name="basic_ink_block">
+          \n&lt;==html==&gt;
+          \\<!-- Styling for the ink block -->
+          \\<div id="ink_content">
+            <p id="content_template" hidden="hidden">{content}</p>
+          \\</div>
+          \\<div id="ink_choices" hidden="hidden">
+            <a id="choice_template" class="ink_choice" choiceindex="{choiceIndex}" href="javascript:void(0)" hidden="hidden">
+              {choiceIndex}. {choiceText}
+            </a>
+          \\</div>
+          \\<div id="tap_reminder" hidden="hidden">
+            (Click or Tap)
+          \\</div>
+          \n&lt;==&gt;
+        </tw-storydefaults>
+        <tw-sidebar>
           <tw-icon tabindex="0" alt="Undo" title="Undo">↶</tw-icon>
           <tw-icon tabindex="1" alt="Redo" title="Redo">↷</tw-icon>
         </tw-sidebar>
-        <tw-passage class="passage" aria-live="polite"></tw-passage></tw-story>`;
+        <tw-passage class="passage" aria-live="polite"></tw-passage>
+      </tw-story>`;
 
       // Create new Story instance
       window._story = new Story();
@@ -264,10 +301,26 @@ describe('Story Navigation', () => {
       <style type="text/twine-css"></style>
    </tw-storydata>
    <tw-story>
-   <tw-sidebar>
-      <tw-icon tabindex="0" alt="Undo" title="Undo">↶</tw-icon>
-      <tw-icon tabindex="1" alt="Redo" title="Redo">↷</tw-icon>
-    </tw-sidebar>
+    <tw-storydefaults tags="ink_block" name="basic_ink_block">
+      \n&lt;==html==&gt;
+      \\<!-- Styling for the ink block -->
+      \\<div id="ink_content">
+        <p id="content_template" hidden="hidden">{content}</p>
+      \\</div>
+      \\<div id="ink_choices" hidden="hidden">
+        <a id="choice_template" class="ink_choice" choiceindex="{choiceIndex}" href="javascript:void(0)" hidden="hidden">
+          {choiceIndex}. {choiceText}
+        </a>
+      \\</div>
+      \\<div id="tap_reminder" hidden="hidden">
+        (Click or Tap)
+      \\</div>
+      \n&lt;==&gt;
+    </tw-storydefaults>
+    <tw-sidebar>
+        <tw-icon tabindex="0" alt="Undo" title="Undo">↶</tw-icon>
+        <tw-icon tabindex="1" alt="Redo" title="Redo">↷</tw-icon>
+      </tw-sidebar>
     <tw-passage aria-live="polite"></tw-passage></tw-story>`;
 
     // Create new Story instance.

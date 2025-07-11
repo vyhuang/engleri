@@ -39,8 +39,8 @@ describe('renderStaticElements()', () => {
     * choice 2
     * choice 3 [] 
     - gather 
-    <> and glue.
-    <==>`;
+    \\<> and glue.
+    \n<==>`;
 
     passage = new Passage(null, null, passageSource);
     passage.renderStaticElements();
@@ -61,7 +61,7 @@ describe('renderStaticElements()', () => {
   });
 
   it('Should correctly populate its inkSource field', () => {
-    console.log(passage);
+    //console.log(passage);
     expect(passage.inkSource).not.toBeNull();
     expect(passage.inkSource).toContain("Ink source text goes here:");
     expect(passage.inkSource).toContain("* choice 1");

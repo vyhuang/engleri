@@ -86,7 +86,7 @@ class Story {
           tags,
           element.innerHTML);
         
-        console.log(passage);
+        //console.log(passage);
 
         if (this.defaultPassages.has(tag)) {
           this.defaultPassages.get(tag).push(passage);
