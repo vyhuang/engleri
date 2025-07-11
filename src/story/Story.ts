@@ -352,10 +352,11 @@ class Story {
     }
 
     let inkContent : Element | null = this.inkBlock.querySelector("div#ink_content");
-    let contentTemplate = this.inkBlock.querySelector('#content_template');
     let inkChoices : Element | null = this.inkBlock.querySelector("div#ink_choices");
-    let choiceTemplate = this.inkBlock.querySelector('#choice_template');
     let tapReminder : Element | null = this.inkBlock.querySelector("div#tap_reminder");
+
+    let contentTemplate = this.inkBlock.querySelector('#content_template');
+    let choiceTemplate = this.inkBlock.querySelector('#choice_template');
 
     let changeMade = false;
     if (choiceIndex >= 0) {
@@ -376,14 +377,16 @@ class Story {
     } 
     
     if (this.currentInkStory.canContinue) {
-      let element = contentTemplate.cloneNode() as Element
+      // Clone the content template
+      let element = document.createElement(contentTemplate.tagName);
+      [...contentTemplate.attributes].forEach(({name, value}) => {
+        element.setAttribute(name, value);
+      })
       element.id = "";
       element.removeAttribute("hidden");
 
       let nextString = this.currentInkStory.Continue()
-
-      let elementInnerHTML = contentTemplate.innerHTML.replace("{content}", nextString);
-      element.innerHTML = elementInnerHTML;
+      element.innerHTML = contentTemplate.innerHTML.replace("{content}", nextString);
 
       inkContent.appendChild(element);
 
@@ -399,18 +402,21 @@ class Story {
     if (inkChoices.getAttribute("hidden") && this.currentInkStory.currentChoices.length > 0 ) {
 
       this.currentInkStory.currentChoices.forEach((choice, index) => {
-        let choiceElement = choiceTemplate.cloneNode() as Element;
-        choiceElement.id = "";
-        choiceElement.setAttribute("class", "ink_choice");
-        choiceElement.setAttribute("choiceIndex", `${index}`);
-        choiceElement.setAttribute("href", "javascript:void(0)");
-        choiceElement.removeAttribute("hidden");
+        // Clone the choice template
+        let element = document.createElement(choiceTemplate.tagName);
+        [...choiceTemplate.attributes].forEach(({name, value}) => {
+          element.setAttribute(name, value.replace("{choiceIndex}", `${index}`));
+        })
+        element.id = "";
+        element.removeAttribute("hidden");
 
-        let elementInnerHtml = choiceTemplate.innerHTML.replace("{choiceIndex}", `${index}`).replace("{choiceText}", choice.text);
-        choiceElement.innerHTML = elementInnerHtml;
-        choiceElement.appendChild(document.createElement("br"));
+        let elementInnerHtml = choiceTemplate.innerHTML.
+          replace("{choiceIndex}", `${index}`).
+          replace("{choiceText}", choice.text);
+        element.innerHTML = elementInnerHtml;
+        element.appendChild(document.createElement("br"));
 
-        inkChoices.appendChild(choiceElement);
+        inkChoices.appendChild(element);
       });
 
       inkChoices.removeAttribute("hidden");
