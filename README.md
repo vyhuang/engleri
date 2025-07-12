@@ -46,13 +46,15 @@
 		- `___bold italic text___`
 	- [v0.3.3] Add css markup `<.class_name(,class_name): >` 
 	- [v0.3.4] Add click-through sequences `<^seq_annotation(,seq_annotation)%% text (% (text))>` 
-	- [v0.3.5] Add turn-through sequences `<%seq_annotation(,seq_annotation)%% text (% (text))>` 
+	- [v0.3.5] Add turn-through sequences `<&seq_annotation(,seq_annotation)%% text (% (text))>` 
 	- [v0.3.6] Add basic block markup: 
 			```
 			<< (@style(,style);)(.class_name(,class_name);)
 			TEXT 
 			>>
 			```
+   	- [v0.3.7] Support 'glue' markup: `<>`
+   	- [v0.3.8] Support 'br' markup: `<%>`
 
 - [v0.4.0] Passage section headers: 
     - include declarations `<==include==><==>`, `<==i><==>`
@@ -87,69 +89,91 @@
 
 - [v0.6.x] Interactivity
 	- [v0.6.0] Add basic conditional text insertion 
-		- `<:boolean_expression: text>` -- reactive insertion (text can be seen if expression evaluates to true later)
+		- `<$boolean_expression: text>` -- reactive insertion (text can be seen if expression evaluates to true later)
 		- `{boolean_expression: text}` -- static insertion (text will not be seen even if expression evaluates to true later)
 	- [v0.6.1] Add support for variables being set to currently-displayed sequence value
 		- `<^sequence_annotations?var%% text (% (text))>` 
-		- `<%sequence_annotations?var%% text (% (text))>`  
+		- `<&sequence_annotations?var%% text (% (text))>`  
 		- this binds a dictionary to {var} with the following keys:
 			- length (total # of elements in sequence)
 			- index (current index position in sequence)
 			- text (current text being displayed)
-	- [v0.6.2] Add click-handler markup
+	- [v0.6.2] Add click-handler markup (function invocation)
 		- `<[text]function_name(,function_name)>`
+  	- [v0.6.3] Support block versions of above markup:
+```
+<<$boolean_expression:
+- other boolean expression:
+text
+- else:
+text
+>>
+```
+```
+<<(^|&)sequence_annotations(?var)%%
+text
+(%
+text)
+>>
+```
+```
+<<[
+text
+]function_name(,function_name)
+>>
+```
 
-  - [v0.7.x] double-check basic twine story format stuff
-  	- Make sure that the JS in 'script' tagged passages (or the Story Javascript script) runs
+- [v0.7.x] double-check basic twine story format stuff
+	- Make sure that the JS in 'script' tagged passages (or the Story Javascript script) runs
 	- Make sure that the CSS in 'style' tagged passages (or the Story Stylesheet passage) runs
 	- Properly rocess the StoryData special passage
 	- Properly Display a passage on game start as specified in StoryData
- 
-  - [v0.8.x] image support
-	- [v0.8.0] Add custom markup to support base64 images (PNG & SVG): 
-		- `<(image alt text)base64:source_string[;.css_class_name, .css_class_name]>`
-	- [v0.8.1] Embed SVG images from [game-icons.net](https://game-icons.net/): 
-		- `<()icon:icon_name[;.css_class_name[,.css_class_name]]>`
-		- alt text should be inserted automatically -- which will require some work
-		- the website can be scraped for icon descriptions
-			- these descriptions can be bundled with a static version of the icon pack
-	- [v0.8.2] Add support for minor icon manipulation: 
-		- `<()icon:icon_name[;@[[background/foreground].[field]=[value][,[background/foreground].[field]=[value]]]>`
-		- background:
-			- gradient
-			- coloring
-			- shape
-		- foreground:
-			- gradient
-			- coloring
-			- transformations (mirror/flip/rotate)
-	- [v0.8.3] Add support for relative paths to image files: 
-		- `<(image alt text)path:image_path>` 
-	- [v0.8.4] Add support for truncated images: 
-		- `<&crop=[css manipulation idk](image alt text) ... >`
-		- when initially shown, create a popup showing the full image	
-		- when popup is closed, a version of the image cropped vertically is embedded into the passage text
-			- ...it looks like this is going to require significant fiddling with CSS [mdn](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
-			- there should be a magnifying icon to indicate it's still clickable
-		- if the cropped image is clicked, the popup is shown again.
 
-	- [v0.9.x] final checks
-		- [v0.9.0] flesh out grammar tests
-		- [v0.9.1] decide on & add default CSS theme
-			- text-centering
-			- clickable elements?
-				- links
-				- sequences
-				- ink-content block element
-			- ink-block integration into main passage (dividers?)
-		- [v0.9.2] allow additional theme settings
-			- author should be able to provide alternative to defaults
-			- player should always be able to use default
-		- [v0.9.2] flesh out component tests
-		- [v0.9.3] work on basic documentation
-		- [v0.9.4] implement basic e2e tests
-		- [v0.9.5] solicit feedback from Twine discord
-		- [v0.9.6] implement feedback from Twine discord (1-2 weeks)
-		- [v0.9.7] solicit more feedback (& refine stuff you hadn't thought of earlier)
-		- [v0.9.8] implement more feedback from Twine discord
-		- [v0.9.9] final documentation pass
+- [v0.8.x] image support
+- [v0.8.0] Add custom markup to support base64 images (PNG & SVG): 
+	- `<(image alt text)base64:source_string[;.css_class_name, .css_class_name]>`
+- [v0.8.1] Embed SVG images from [game-icons.net](https://game-icons.net/): 
+	- `<()icon:icon_name[;.css_class_name[,.css_class_name]]>`
+	- alt text should be inserted automatically -- which will require some work
+	- the website can be scraped for icon descriptions
+		- these descriptions can be bundled with a static version of the icon pack
+- [v0.8.2] Add support for minor icon manipulation: 
+	- `<()icon:icon_name[;@[[background/foreground].[field]=[value][,[background/foreground].[field]=[value]]]>`
+	- background:
+		- gradient
+		- coloring
+		- shape
+	- foreground:
+		- gradient
+		- coloring
+		- transformations (mirror/flip/rotate)
+- [v0.8.3] Add support for relative paths to image files: 
+	- `<(image alt text)path:image_path>` 
+- [v0.8.4] Add support for truncated images: 
+	- `<&crop=[css manipulation idk](image alt text) ... >`
+	- when initially shown, create a popup showing the full image	
+	- when popup is closed, a version of the image cropped vertically is embedded into the passage text
+		- ...it looks like this is going to require significant fiddling with CSS [mdn](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+		- there should be a magnifying icon to indicate it's still clickable
+	- if the cropped image is clicked, the popup is shown again.
+
+- [v0.9.x] final checks
+	- [v0.9.0] flesh out grammar tests
+	- [v0.9.1] decide on & add default CSS theme
+		- text-centering
+		- clickable elements?
+			- links
+			- sequences
+			- ink-content block element
+		- ink-block integration into main passage (dividers?)
+	- [v0.9.2] allow additional theme settings
+		- author should be able to provide alternative to defaults
+		- player should always be able to use default
+	- [v0.9.2] flesh out component tests
+	- [v0.9.3] work on basic documentation
+	- [v0.9.4] implement basic e2e tests
+	- [v0.9.5] solicit feedback from Twine discord
+	- [v0.9.6] implement feedback from Twine discord (1-2 weeks)
+	- [v0.9.7] solicit more feedback (& refine stuff you hadn't thought of earlier)
+	- [v0.9.8] implement more feedback from Twine discord
+	- [v0.9.9] final documentation pass
